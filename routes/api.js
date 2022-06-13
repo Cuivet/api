@@ -2,8 +2,11 @@
 
 const router = require('express').Router();
 
+const middleware = require('./middleware')
 const apiPetRouter = require('./api/pet');
+const apiUserRouter = require('./api/user');
 
-router.use('/pet',apiPetRouter);
+router.use('/pet', middleware.checkToken, apiPetRouter);
+router.use('/user',apiUserRouter);
 
 module.exports = router;
