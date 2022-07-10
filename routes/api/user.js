@@ -5,6 +5,9 @@ const { check, validationResult } = require('express-validator');
 const moment = require('moment');
 const jwt = require('jwt-simple');
 
+var cors = require('cors');
+router.use(cors());
+
 router.post('/register', [
     check('username','El nombre de usuario es obligatorio').not().isEmpty(),
     check('password','El password es obligatorio').not().isEmpty(),
