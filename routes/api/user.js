@@ -9,7 +9,6 @@ var cors = require('cors');
 router.use(cors());
 
 router.post('/register', [
-    check('username','El nombre de usuario es obligatorio').not().isEmpty(),
     check('password','El password es obligatorio').not().isEmpty(),
     check('email','El email es incorrecto').isEmail()
 ], async (req, res) => {

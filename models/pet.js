@@ -5,7 +5,8 @@ module.exports = (sequelize, type) => {
             primaryKey: true,
             autoIncrement: true
         },
-        name: type.STRING,
-        age: type.INTEGER
+        name: type.STRING
+    },{
+        freezeTableName: true
     });
 }
