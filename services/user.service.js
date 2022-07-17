@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs');
 const { User } = require('../models/db');
 const moment = require('moment');
 const jwt = require('jwt-simple');
-const { check } = require('express-validator');
 
 var userService = {
     registerUser: registerUser,

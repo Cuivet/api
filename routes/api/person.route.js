@@ -1,41 +1,34 @@
 const router = require('express').Router();
-
-const { Person } = require('../../models/db');
+const personService = require('../../services/person.service');
 
 router.get('/all', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const persons = await Person.findAll();
+    const persons = await personService.findAll();
     res.json(persons);
 });
 
 router.get('/:id', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const person = await Person.findAll({
-        where: { id: req.params.id }
-    });
+    const person = await personService.findOne(req.params.id);
     res.json(person);
 });
 
 router.post('/', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const newPerson = await Person.create(req.body);
+    const newPerson = await personService.save(req.body);
     res.json(newPerson);
 });
 
-router.put('/:id', async (req,res) => {
+router.put('/', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    await Person.update(req.body, {
-        where: { id: req.params.id }
-    });
-    res.json({message: 'Person con id ' + req.params.id + ' actualizado'});
+    const updatedPerson = await personService.save(req.body);
+    res.json(updatedPerson);
 });
 
 router.delete('/:id', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    await Person.destroy({
-        where: { id: req.params.id }
-    });
-    res.json({message: 'Person con id ' + req.params.id + ' borrado'});
+    const response = await personService.remove(req.params.id);
+    res.json(response);
 });
 
 module.exports = router;
