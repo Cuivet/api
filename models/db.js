@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize'); // esta es la libreria sequelize
 
-const PetModel = require('./db/pet.model');
 const UserModel = require('./db/user.model');
 const PersonModel = require('./db/person.model');
 
@@ -9,7 +8,6 @@ const sequelize = new Sequelize('cuivet-api','root','rootpass',{
     dialect: 'mysql'
 }); //este seria el objeto sequelize
 
-const Pet = PetModel(sequelize, Sequelize);
 const User = UserModel(sequelize, Sequelize);
 const Person = PersonModel(sequelize, Sequelize);
 
@@ -22,7 +20,6 @@ sequelize.sync({ force: false})
     });
 
 module.exports = {
-    Pet,
     User,
     Person
 }
