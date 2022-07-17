@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { Person } = require('../../db');
+const { Person } = require('../../models/db');
 
 router.get('/all', async (req,res) => {
     console.log('PETICION RECIBIDA: GET en el endpoint /api/person/all para traer todos las Person');

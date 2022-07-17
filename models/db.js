@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize'); // esta es la libreria sequelize
 
-const PetModel = require('./models/pet.model');
-const UserModel = require('./models/user.model');
-const PersonModel = require('./models/person.model');
+const PetModel = require('./db/pet.model');
+const UserModel = require('./db/user.model');
+const PersonModel = require('./db/person.model');
 
 const sequelize = new Sequelize('cuivet-api','root','rootpass',{
     host: 'localhost',

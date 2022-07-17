@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { Pet } = require('../../db');
+const { Pet } = require('../../models/db');
 
 router.get('/all', async (req,res) => {
     console.log('PETICION RECIBIDA: GET en el endpoint /api/pet/all para traer todos los Pet');

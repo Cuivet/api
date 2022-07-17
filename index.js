@@ -5,7 +5,7 @@ const apiRouter = require('./routes/api'); //aca lo que estoy haciendo es decirl
 
 const app = express(); //llamo a express
 
-require('./db')
+require('./models/db')
 
 app.use(bodyParser.json()); //con esto lanzo un middleware
 app.use(bodyParser.urlencoded({extended: true})); //me codifica la URL
