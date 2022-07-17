@@ -3,9 +3,9 @@
 const router = require('express').Router();
 
 const middleware = require('./middleware')
-const apiPetRouter = require('./api/pet');
-const apiPersonRouter = require('./api/person');
-const apiUserRouter = require('./api/user');
+const apiPetRouter = require('./api/pet.route');
+const apiPersonRouter = require('./api/person.route');
+const apiUserRouter = require('./api/user.route');
 
 router.use('/pet', middleware.checkToken, apiPetRouter);
 router.use('/person', middleware.checkToken, apiPersonRouter);
