@@ -2,6 +2,7 @@ const Sequelize = require('sequelize'); // esta es la libreria sequelize
 
 const PetModel = require('./models/pet');
 const UserModel = require('./models/user');
+const PersonModel = require('./models/person');
 
 const sequelize = new Sequelize('cuivet-api','root','rootpass',{
     host: 'localhost',
@@ -10,6 +11,10 @@ const sequelize = new Sequelize('cuivet-api','root','rootpass',{
 
 const Pet = PetModel(sequelize, Sequelize);
 const User = UserModel(sequelize, Sequelize);
+const Person = PersonModel(sequelize, Sequelize);
+
+// Relaciones entre entidades
+Person.belongsTo(User);
 
 sequelize.sync({ force: false})
     .then(() => {
@@ -18,5 +23,6 @@ sequelize.sync({ force: false})
 
 module.exports = {
     Pet,
-    User
+    User,
+    Person
 }
