@@ -3,13 +3,13 @@ const router = require('express').Router();
 const { Pet } = require('../../models/db');
 
 router.get('/all', async (req,res) => {
-    console.log('PETICION RECIBIDA: GET en el endpoint /api/pet/all para traer todos los Pet');
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const pets = await Pet.findAll();
-    console.log('Consulta exitosa!');
     res.json(pets);
 });
 
 router.get('/:id', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const pet = await Pet.findAll({
         where: { id: req.params.id }
     });
@@ -17,11 +17,13 @@ router.get('/:id', async (req,res) => {
 });
 
 router.post('/', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const newPet = await Pet.create(req.body);
     res.json(newPet);
 });
 
 router.put('/:id', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     await Pet.update(req.body, {
         where: { id: req.params.id }
     });
@@ -29,6 +31,7 @@ router.put('/:id', async (req,res) => {
 });
 
 router.delete('/:id', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     await Pet.destroy({
         where: { id: req.params.id }
     });
