@@ -24,4 +24,10 @@ router.post('/login', async (req, res) => {
     res.json(await userService.loginUser(req.body));
 });
 
+router.get('/profile', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const profile = await userService.findProfile(req.headers.token);
+    res.json(profile);
+});
+
 module.exports = router;

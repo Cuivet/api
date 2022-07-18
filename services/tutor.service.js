@@ -4,7 +4,8 @@ var tutorService = {
     save: save,
     findOne: findOne,
     findAll: findAll,
-    remove: remove
+    remove: remove,
+    findByUserId
 }
 
 async function save(reqTutor){
@@ -36,6 +37,13 @@ async function remove(id){
         where: { id: id }
     });
     return {message: 'Tutor con id ' + id + ' borrado'};
+}
+
+async function findByUserId(userId){
+    const tutor = await Tutor.findAll({
+        where: { userId: userId }
+    });
+    return tutor;
 }
 
 module.exports = tutorService;

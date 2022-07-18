@@ -4,7 +4,8 @@ var vetOwnerService = {
     save: save,
     findOne: findOne,
     findAll: findAll,
-    remove: remove
+    remove: remove,
+    findByUserId: findByUserId
 }
 
 async function save(reqVetOwner){
@@ -36,6 +37,13 @@ async function remove(id){
         where: { id: id }
     });
     return {message: 'VetOwner con id ' + id + ' borrado'};
+}
+
+async function findByUserId(userId){
+    const vetOwner = await VetOwner.findAll({
+        where: { userId: userId }
+    });
+    return vetOwner;
 }
 
 module.exports = vetOwnerService;

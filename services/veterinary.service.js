@@ -4,7 +4,8 @@ var veterinaryService = {
     save: save,
     findOne: findOne,
     findAll: findAll,
-    remove: remove
+    remove: remove,
+    findByUserId: findByUserId
 }
 
 async function save(reqVeterinary){
@@ -36,6 +37,13 @@ async function remove(id){
         where: { id: id }
     });
     return {message: 'Veterinary con id ' + id + ' borrado'};
+}
+
+async function findByUserId(userId){
+    const veterinary = await Veterinary.findAll({
+        where: { userId: userId }
+    });
+    return veterinary;
 }
 
 module.exports = veterinaryService;

@@ -4,7 +4,8 @@ var personService = {
     save: save,
     findOne: findOne,
     findAll: findAll,
-    remove: remove
+    remove: remove,
+    findByUserId: findByUserId
 }
 
 async function save(reqPerson){
@@ -36,6 +37,13 @@ async function remove(id){
         where: { id: id }
     });
     return {message: 'Person con id ' + id + ' borrado'};
+}
+
+async function findByUserId(userId){
+    const person = await Person.findAll({
+        where: { userId: userId }
+    });
+    return person;
 }
 
 module.exports = personService;
