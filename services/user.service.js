@@ -2,16 +2,23 @@ const bcrypt = require('bcryptjs');
 const { User } = require('../models/db');
 const moment = require('moment');
 const jwt = require('jwt-simple');
+const personService = require('../services/person.service');
 
 var userService = {
     registerUser: registerUser,
     loginUser: loginUser
 }
 
-async function registerUser(newUser){
-    newUser.password = bcrypt.hashSync(newUser.password,10);
-    const user = await User.create(newUser);
-    return user;
+async function registerUser(newProfile){
+    newProfile.user.password = bcrypt.hashSync(newProfile.user.password,10);
+    try {
+        const user = await User.create(newProfile.user);
+        newProfile.person.userId = user.id;
+        const person = await personService.save(newProfile.person);
+    } catch{
+        return 'ERROR'; // ver despues de devolver un HTTP error y NO un json que con http OK
+    }
+    return newProfile;
 }
 
 async function loginUser(user){

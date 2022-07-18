@@ -14,6 +14,7 @@ async function save(reqPerson){
         person = await findOne(reqPerson.id);
     } else{
         person = await Person.create(reqPerson);
+        person = await findOne(person.id);
     }
     return person;
 }
