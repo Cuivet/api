@@ -14,9 +14,12 @@ var userService = {
 }
 
 async function registerUser(newProfile){
+    const bdUser = await User.findOne({ where: { email: newProfile.user.email }});
+    if(bdUser){ return { error: 'Usuario ya existente' }; }
+    
     newProfile.user.password = bcrypt.hashSync(newProfile.user.password,10);
     try {
-        const user =    await User.create(newProfile.user); 
+        const user = await User.create(newProfile.user); 
         newProfile.person.userId = user.id;
         const person = await personService.save(newProfile.person);
         if (newProfile.veterinary != undefined){
