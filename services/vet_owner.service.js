@@ -40,9 +40,10 @@ async function remove(id){
 }
 
 async function findByUserId(userId){
-    const vetOwner = await VetOwner.findAll({
+    var vetOwner = await VetOwner.findAll({
         where: { userId: userId }
     });
+    vetOwner = vetOwner.length ? vetOwner[0] : null;
     return vetOwner;
 }
 

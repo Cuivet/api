@@ -16,7 +16,7 @@ var userService = {
 async function registerUser(newProfile){
     newProfile.user.password = bcrypt.hashSync(newProfile.user.password,10);
     try {
-        const user =    await User.create(newProfile.user);
+        const user =    await User.create(newProfile.user); 
         newProfile.person.userId = user.id;
         const person = await personService.save(newProfile.person);
         if (newProfile.veterinary != undefined){
@@ -39,23 +39,19 @@ async function registerUser(newProfile){
 
 async function findProfile(token){
     userId = decodeToken(token);
-    prifle = null;
+    profile = null;
     person = await personService.findByUserId(userId);
-    await veterinaryService.findByUserId(userId).then(res => {
-        if(res[0] != undefined){
-            profile = {person:person,veterinary:res[0]}
+    veterinary = await veterinaryService.findByUserId(userId);
+    tutor = await tutorService.findByUserId(userId);
+    vetOwner = await vetOwnerService.findByUserId(userId);
+    if(person){
+        profile = {
+            person: person,
+            veterinary: veterinary,
+            tutor: tutor,
+            vetOwner: vetOwner
         }
-      });
-    await tutorService.findByUserId(userId).then(res => {
-        if(res[0] != undefined){
-            profile = {person:person,veterinary:res[0]}
-        }
-      });;
-    await vetOwnerService.findByUserId(userId).then(res => {
-        if(res[0] != undefined){
-            profile= {person:person,veterinary:res[0]}
-        }
-      });;
+    }
     return profile;
 }
 

@@ -40,9 +40,10 @@ async function remove(id){
 }
 
 async function findByUserId(userId){
-    const person = await Person.findAll({
+    var person = await Person.findAll({
         where: { userId: userId }
     });
+    person = person.length ? person[0] : null;
     return person;
 }
 
