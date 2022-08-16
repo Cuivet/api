@@ -2,6 +2,9 @@
 const router = require('express').Router();
 const middleware = require('./middleware');
 
+var cors = require('cors');
+router.use(cors());
+
 const apiUserRouter = require('./api/user.route');
 const apiPersonRouter = require('./api/person.route');
 const apiVeterinaryRouter = require('./api/veterinary.route');
