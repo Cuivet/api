@@ -60,16 +60,16 @@ async function findProfile(token){
 
 async function loginUser(user){
     const bdUser = await User.findOne({ where: { email: user.email }});
-    if(bdUser){
-        const isSamePassword = bcrypt.compareSync(user.password, bdUser.password);
-        if(isSamePassword){
-            return { success: createToken(bdUser) };
-        } else{
-            return { error: 'Error en usuario y/o contraseña' };
-        }
-    } else{
-        return { error: 'Error en usuario y/o contraseña' };
+    if(!bdUser){
+        return { error: 'Usuario no existente' };
     }
+
+    const isSamePassword = bcrypt.compareSync(user.password, bdUser.password);
+    if(!isSamePassword){
+        return { error: 'Contraseña incorrecta' }
+    }
+
+    return { success: createToken(bdUser) };
 }
 
 const createToken = (user) => {
