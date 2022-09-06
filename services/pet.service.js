@@ -1,4 +1,6 @@
 const { Pet } = require('../models/db');
+var crypto = require('crypto');
+
 
 var petService = {
     save: save,
@@ -10,13 +12,13 @@ var petService = {
 
 async function save(reqPet){
     var pet = Pet;
+    reqPet.imageCode = crypto.randomBytes(20).toString('hex');
     if(reqPet.id){
-        await Pet.update(reqPet, { where: { id: reqPet.id }});
-        pet = await findOne(reqPet.id);
+        pet = await Pet.update(reqPet, { where: { id: reqPet.id }});
     } else{
         pet = await Pet.create(reqPet);
-        pet = await findOne(pet.id);
     }
+    pet = await findOne(pet.id);
     return pet;
 }
 
