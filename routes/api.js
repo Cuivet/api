@@ -11,12 +11,14 @@ const apiVeterinaryRouter = require('./api/veterinary.route');
 const apiTutorRouter = require('./api/tutor.route');
 const apiVetOwnerRouter = require('./api/vet_owner.route');
 const apiPetRouter = require('./api/pet.route');
+const apiVetRouter = require('./api/vet.route');
 
 router.use('/user', apiUserRouter);
 router.use('/person', middleware.checkToken, apiPersonRouter);
 router.use('/veterinary', middleware.checkToken, apiVeterinaryRouter);
 router.use('/tutor', middleware.checkToken, apiTutorRouter);
 router.use('/vet-owner', middleware.checkToken, apiVetOwnerRouter);
-router.use('/pet', apiPetRouter); //hace falta checkear el token acá?
+router.use('/pet', apiPetRouter);
+router.use('/vet', middleware.checkToken, apiVetRouter);
 
 module.exports = router;
