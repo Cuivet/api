@@ -18,7 +18,7 @@ router.use('/person', middleware.checkToken, apiPersonRouter);
 router.use('/veterinary', middleware.checkToken, apiVeterinaryRouter);
 router.use('/tutor', middleware.checkToken, apiTutorRouter);
 router.use('/vet-owner', middleware.checkToken, apiVetOwnerRouter);
-router.use('/pet', apiPetRouter);
+router.use('/pet', middleware.checkToken, apiPetRouter); 
 router.use('/vet', middleware.checkToken, apiVetRouter);
 
 module.exports = router;

@@ -7,7 +7,7 @@ router.get('/all', async (req,res) => {
     res.json(pets);
 });
 
-router.get('/all/:tutorId', async (req,res) => {
+router.get('/allByTutorId/:tutorId', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const pets = await petService.findByTutorId(req.params.tutorId);
     res.json(pets);
