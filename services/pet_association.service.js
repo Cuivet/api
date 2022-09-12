@@ -4,6 +4,7 @@ const veterinaryService = require('./veterinary.service');
 const petService = require('./pet.service');
 const personService = require('./person.service');
 const tutorService = require('./tutor.service');
+const { Op } = require("sequelize");
 
 var petAssociationService = {
     save: save,
@@ -16,11 +17,15 @@ var petAssociationService = {
 
 var temporalPetAssociations = [];
 
-async function save(reqPetAssociation){
-    var petAssociation = PetAssociation;
-    petAssociation = await PetAssociation.create(reqPetAssociation);
-    petAssociation = await findOne(reqPetAssociation.id);
-    return petAssociation;
+async function save(reqPetAssociations){
+    const existentPetAssociations = await PetAssociation.findAll({where: {[Op.or]: reqPetAssociations}});
+    existentPetAssociations.forEach( epa => {
+        reqPetAssociations = reqPetAssociations.filter(rpa => rpa.petId != epa.petId && epa.veterinaryId != epa.veterinaryId );
+    });
+    reqPetAssociations.forEach(async function eachPetAssociation(petAssociation){
+        await PetAssociation.create(petAssociation);
+    })
+    return await PetAssociation.findAll({where: {[Op.or]: reqPetAssociations}});
 }
 
 async function remove(id){

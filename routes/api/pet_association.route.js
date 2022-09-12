@@ -31,7 +31,7 @@ router.post('/registerTemporalAssociation', async (req,res) => {
     res.json(newTemporalPetAssociation);
 });
 
-router.get('/oneTemporalAssociationByCode/:code', async (req,res) => {
+router.get('/temporalAssociationByCode/:code', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const temporalPetAssociation = await petAssociationService.findTemporalAssociationByCode(req.params.code);
     res.json(temporalPetAssociation);
