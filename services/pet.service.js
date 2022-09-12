@@ -40,11 +40,10 @@ async function remove(id){
 }
 
 async function findByTutorId(tutorId){
-    var pet = await Pet.findOne({
+    var pets = await Pet.findAll({
         where: { tutorId: tutorId }
     });
-    pet = pet ? pet : null;
-    return pet;
+    return pets;
 }
 
 module.exports = petService;
