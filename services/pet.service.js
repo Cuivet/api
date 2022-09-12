@@ -21,7 +21,7 @@ async function save(reqPet){
 }
 
 async function findOne(id){
-    const pet = await Pet.findAll({
+    const pet = await Pet.findOne({
         where: { id: id }
     });
     return pet;
@@ -40,10 +40,10 @@ async function remove(id){
 }
 
 async function findByTutorId(tutorId){
-    var pet = await Pet.findAll({
+    var pet = await Pet.findOne({
         where: { tutorId: tutorId }
     });
-    //pet = pet.length ? pet[0] : null;
+    pet = pet ? pet : null;
     return pet;
 }
 
