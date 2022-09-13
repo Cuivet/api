@@ -61,12 +61,26 @@ async function findAllByTutorId(tutorId){
         const veterinaryPerson = persons.filter( person => person.userId = veterinary.userId)[0];
         vetXpets.push({ veterinaryData: { veterinary: veterinary, person: veterinaryPerson }, pets: petsFromAsoc });
     })
-    return vetXpets; // probar 
+    return vetXpets;
 }
 
 async function findAllByVeterinaryId(veterinaryId){
-    var petAssociation = await PetAssociation.findAll({ where: { veterinaryId: veterinaryId } });
-    return petAssociation;
+    const petAssociations = await PetAssociation.findAll({ where: { veterinaryId: veterinaryId } });
+    const petIds = petAssociations.map( petAssociation => petAssociation.petId);
+    const pets = await petService.findByFilter({where: { id: petIds }});
+    const tutorIds = pets.map( pet => pet.tutorId);
+    const tutors = await tutorService.findByFilter({where: { id: tutorIds }});
+    const userIds = tutors.map( tutor => tutor.userId);
+    const persons = await personService.findByFilter({where: { userId: userIds }});
+
+    var vetXpets = [];
+    pets.forEach(async function eachPet(pet) {
+        tutor = tutors.filter(tutor => tutor.id === pet.tutorId)[0];
+        tutorPerson = persons.filter(person => person.userId === tutor.userId)[0];
+        vetXpets.push({ tutorData: { tutor: tutor, person: tutorPerson }, pet: pet });
+    });
+
+    return vetXpets;
 }
 
 async function saveTemporalAssociation(reqPetAssociation){

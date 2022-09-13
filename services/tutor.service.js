@@ -5,7 +5,8 @@ var tutorService = {
     findOne: findOne,
     findAll: findAll,
     remove: remove,
-    findByUserId: findByUserId
+    findByUserId: findByUserId,
+    findByFilter: findByFilter
 }
 
 async function save(reqTutor){
@@ -45,6 +46,12 @@ async function findByUserId(userId){
     });
     tutor = tutor ? tutor : null;
     return tutor;
+}
+
+async function findByFilter(filter){
+    var tutors = await Tutor.findAll(filter);
+    tutors = tutors ? tutors : null;
+    return tutors;
 }
 
 module.exports = tutorService;
