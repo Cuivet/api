@@ -1,17 +1,47 @@
-const express = require('express'); //la inicializo 
+const express = require('express');
 const bodyParser = require('body-parser');
+const apiRouter = require('./routes/api');
+const app = express();
+const { exec } = require("child_process");
+require('./models/db');
 
-const apiRouter = require('./routes/api'); //aca lo que estoy haciendo es decirle que todas las routas que entran al servidor con /api, las va a gestionar el fichero apiRouter
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
-const app = express(); //llamo a express
-
-require('./models/db')
-
-app.use(bodyParser.json()); //con esto lanzo un middleware
-app.use(bodyParser.urlencoded({extended: true})); //me codifica la URL
-
-app.use('/api', apiRouter)
+app.use('/api', apiRouter);
 
 app.listen(3000,() => {
+    refreshDataBase();
     console.log('Servidor corriendo!');
 });
+
+
+
+function refreshDataBase(){
+    exec("npx sequelize-cli db:seed:undo", (error, stdout, stderr) => {
+        if (error) {
+            console.log(`No se pudieron dropear las semillas. Error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`Se dropearon las semillas con stderr: ${stderr}`);
+            return writeDataBase();
+        }
+        console.log(`Se dropearon las semillas con stdout: ${stdout}`);
+        writeDataBase();
+    });
+}
+
+function writeDataBase(){
+    exec("npx sequelize-cli db:seed:all", (error, stdout, stderr) => {
+        if (error) {
+            console.log(`No se pudieron inicializar las semillas. Error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`Se inicializaron las semillas con stderr: ${stderr}`);
+            return;
+        }
+        console.log(`Se inicializaron las semillas con stdout: ${stdout}`);
+    });
+}

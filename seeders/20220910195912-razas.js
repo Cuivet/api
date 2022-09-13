@@ -23,7 +23,7 @@ module.exports = {
 
     return queryInterface.bulkInsert('race',races,{} );
   },
-  // down: (queryInterface, Sequelize) => {
-  //   return queryInterface.bulkDelete('Race', null, {});
-  // }
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.bulkDelete('Race', null, {});
+  }
 };
