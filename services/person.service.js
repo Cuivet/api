@@ -5,7 +5,9 @@ var personService = {
     findOne: findOne,
     findAll: findAll,
     remove: remove,
-    findByUserId: findByUserId
+    findByUserId: findByUserId,
+    findOneByDni: findOneByDni,
+    findByFilter: findByFilter
 }
 
 async function save(reqPerson){
@@ -21,7 +23,7 @@ async function save(reqPerson){
 }
 
 async function findOne(id){
-    const person = await Person.findAll({
+    const person = await Person.findOne({
         where: { id: id }
     });
     return person;
@@ -40,11 +42,25 @@ async function remove(id){
 }
 
 async function findByUserId(userId){
-    var person = await Person.findAll({
+    var person = await Person.findOne({
         where: { userId: userId }
     });
-    person = person.length ? person[0] : null;
+    person = person ? person : null;
     return person;
+}
+
+async function findOneByDni(userDni){
+    var person = await Person.findOne({
+        where: { dni: userDni }
+    });
+    person = person ? person : null;
+    return person;
+}
+
+async function findByFilter(filter){
+    var persons = await Person.findAll(filter);
+    persons = persons ? persons : null;
+    return persons;
 }
 
 module.exports = personService;

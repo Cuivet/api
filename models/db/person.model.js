@@ -5,7 +5,8 @@ module.exports = (sequelize, type) => {
         lastName: type.STRING,
         dni: type.INTEGER,
         phone: type.STRING,
-        address: type.STRING
+        address: type.STRING,
+        dni: type.INTEGER
     },{
         freezeTableName: true
     });

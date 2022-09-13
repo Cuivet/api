@@ -5,7 +5,8 @@ var petService = {
     findOne: findOne,
     findAll: findAll,
     remove: remove,
-    findByTutorId: findByTutorId
+    findByTutorId: findByTutorId,
+    findByFilter: findByFilter
 }
 
 async function save(reqPet){
@@ -21,7 +22,7 @@ async function save(reqPet){
 }
 
 async function findOne(id){
-    const pet = await Pet.findAll({
+    const pet = await Pet.findOne({
         where: { id: id }
     });
     return pet;
@@ -40,11 +41,16 @@ async function remove(id){
 }
 
 async function findByTutorId(tutorId){
-    var pet = await Pet.findAll({
+    var pets = await Pet.findAll({
         where: { tutorId: tutorId }
     });
-    //pet = pet.length ? pet[0] : null;
-    return pet;
+    return pets;
+}
+
+async function findByFilter(filter){
+    var pets = await Pet.findAll(filter);
+    pets = pets ? pets : null;
+    return pets;
 }
 
 module.exports = petService;

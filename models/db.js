@@ -9,6 +9,7 @@ const PetModel = require('./db/pet.model');
 const VetModel = require('./db/vet.model');
 const RaceModel = require('./db/race.model');
 const SpecieModel = require('./db/specie.model');
+const PetAssociationModel = require('./db/pet_association.model');
 
 const sequelize = new Sequelize('cuivet-api','root','rootpass',{
     host: 'localhost',
@@ -24,7 +25,7 @@ const Pet = PetModel(sequelize, Sequelize);
 const Vet = VetModel(sequelize, Sequelize);
 const Race = RaceModel(sequelize, Sequelize);
 const Specie = SpecieModel(sequelize, Sequelize);
-
+const PetAssociation = PetAssociationModel(sequelize, Sequelize);
 
 // Relaciones entre entidades
 Person.belongsTo(User);
@@ -36,6 +37,9 @@ Pet.belongsTo(Specie);
 Pet.belongsTo(Race);
 Race.belongsTo(Specie);
 Vet.belongsTo(VetOwner);
+PetAssociation.belongsTo(Pet);
+PetAssociation.belongsTo(Veterinary);
+PetAssociation.belongsTo(Vet);
 
 
 sequelize.sync({ force: false})
@@ -49,8 +53,9 @@ module.exports = {
     Veterinary,
     Tutor,
     VetOwner,
-    Pet,
-    Vet, 
+    Pet, 
     Race,
-    Specie
+    Specie,
+    Vet,
+    PetAssociation
 }
