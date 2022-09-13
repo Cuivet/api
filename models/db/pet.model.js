@@ -3,7 +3,7 @@ module.exports = (sequelize, type) => {
         id: {type: type.INTEGER, primaryKey: true, autoIncrement: true},
         name: type.STRING,
         birth: type.DATE,
-        sex: type.BOOLEAN,
+        male: type.BOOLEAN,
     },{
         freezeTableName: true //para que sequelize no le agregue una s al final del nombre.
     });

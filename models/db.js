@@ -33,7 +33,6 @@ Veterinary.belongsTo(User);
 Tutor.belongsTo(User);
 VetOwner.belongsTo(User);
 Pet.belongsTo(Tutor);
-Pet.belongsTo(Specie);
 Pet.belongsTo(Race);
 Race.belongsTo(Specie);
 Vet.belongsTo(VetOwner);
