@@ -12,6 +12,8 @@ const apiTutorRouter = require('./api/tutor.route');
 const apiVetOwnerRouter = require('./api/vet_owner.route');
 const apiPetRouter = require('./api/pet.route');
 const apiVetRouter = require('./api/vet.route');
+const apiRaceRouter = require('./api/race.route');
+const apiSpecieRouter = require('./api/specie.route');
 const apiPetAssociationRouter = require('./api/pet_association.route')
 
 router.use('/user', apiUserRouter);
@@ -21,6 +23,8 @@ router.use('/tutor', middleware.checkToken, apiTutorRouter);
 router.use('/vet-owner', middleware.checkToken, apiVetOwnerRouter);
 router.use('/pet', middleware.checkToken, apiPetRouter); 
 router.use('/vet', middleware.checkToken, apiVetRouter);
+router.use('/race', middleware.checkToken, apiRaceRouter);
+router.use('/specie', middleware.checkToken, apiSpecieRouter);
 router.use('/pet-association', middleware.checkToken, apiPetAssociationRouter); 
 
 module.exports = router;
