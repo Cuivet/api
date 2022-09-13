@@ -19,6 +19,12 @@ router.get('/allByPetId/:petId', async (req,res) => {
     res.json(petAssociations);
 });
 
+router.get('/allByTutor/:tutorId', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const petAssociations = await petAssociationService.findAllByTutorId(req.params.tutorId);
+    res.json(petAssociations);
+});
+
 router.get('/allByVeterinaryId/:veterinaryId', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const petAssociations = await petAssociationService.findAllByVeterinaryId(req.params.veterinaryId);

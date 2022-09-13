@@ -6,7 +6,8 @@ var personService = {
     findAll: findAll,
     remove: remove,
     findByUserId: findByUserId,
-    findOneByDni: findOneByDni
+    findOneByDni: findOneByDni,
+    findByFilter: findByFilter
 }
 
 async function save(reqPerson){
@@ -54,6 +55,12 @@ async function findOneByDni(userDni){
     });
     person = person ? person : null;
     return person;
+}
+
+async function findByFilter(filter){
+    var persons = await Person.findAll(filter);
+    persons = persons ? persons : null;
+    return persons;
 }
 
 module.exports = personService;

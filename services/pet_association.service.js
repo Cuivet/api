@@ -1,5 +1,5 @@
 const moment = require('moment/moment');
-const { PetAssociation } = require('../models/db');
+const { PetAssociation, Pet } = require('../models/db');
 const veterinaryService = require('./veterinary.service');
 const petService = require('./pet.service');
 const personService = require('./person.service');
@@ -10,6 +10,7 @@ var petAssociationService = {
     save: save,
     remove: remove,
     findAllByPetId: findAllByPetId,
+    findAllByTutorId: findAllByTutorId,
     findAllByVeterinaryId: findAllByVeterinaryId,
     saveTemporalAssociation: saveTemporalAssociation,
     findTemporalAssociationByCode: findTemporalAssociationByCode
@@ -38,6 +39,29 @@ async function remove(id){
 async function findAllByPetId(petId){
     var petAssociation = await PetAssociation.findAll({ where: { petId: petId } });
     return petAssociation;
+}
+
+async function findAllByTutorId(tutorId){
+    const pets = await petService.findByTutorId(tutorId);
+    const petIds = pets.map( pet => pet.id);
+    const petAssociations = await PetAssociation.findAll({ where: { petId: petIds } });
+    const veterinariesIds = petAssociations.map( petAssociation => petAssociation.veterinaryId);
+    const veterinaries = await veterinaryService.findByFilter({where: { id: veterinariesIds }});
+    const userIds = veterinaries.map( veterinary => veterinary.userId);
+    const persons = await personService.findByFilter({where: { userId: userIds }});
+
+    vetXpets = [];
+    veterinaries.forEach(async function eachVeterinary(veterinary) {
+        veterinaryPetAssociations = petAssociations.filter(petAssociation => petAssociation.veterinaryId === veterinary.id);
+        petIdsFromAsoc = veterinaryPetAssociations.map( veterinaryPetAssociation => veterinaryPetAssociation.petId);
+        petsFromAsoc = [];
+        petIdsFromAsoc.forEach(petId => {
+            petsFromAsoc.push(pets.filter(pet => petId === pet.id)[0]);
+        });
+        const veterinaryPerson = persons.filter( person => person.userId = veterinary.userId)[0];
+        vetXpets.push({ veterinaryData: { veterinary: veterinary, person: veterinaryPerson }, pets: petsFromAsoc });
+    })
+    return vetXpets; // probar 
 }
 
 async function findAllByVeterinaryId(veterinaryId){

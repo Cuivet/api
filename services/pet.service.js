@@ -5,7 +5,8 @@ var petService = {
     findOne: findOne,
     findAll: findAll,
     remove: remove,
-    findByTutorId: findByTutorId
+    findByTutorId: findByTutorId,
+    findByFilter: findByFilter
 }
 
 async function save(reqPet){
@@ -43,6 +44,12 @@ async function findByTutorId(tutorId){
     var pets = await Pet.findAll({
         where: { tutorId: tutorId }
     });
+    return pets;
+}
+
+async function findByFilter(filter){
+    var pets = await Pet.findAll(filter);
+    pets = pets ? pets : null;
     return pets;
 }
 

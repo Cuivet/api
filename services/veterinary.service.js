@@ -5,7 +5,8 @@ var veterinaryService = {
     findOne: findOne,
     findAll: findAll,
     remove: remove,
-    findByUserId: findByUserId
+    findByUserId: findByUserId,
+    findByFilter: findByFilter
 }
 
 async function save(reqVeterinary){
@@ -45,6 +46,12 @@ async function findByUserId(userId){
     });
     veterinary = veterinary ? veterinary : null;
     return veterinary;
+}
+
+async function findByFilter(filter){
+    var veterinaries = await Veterinary.findAll(filter);
+    veterinaries = veterinaries ? veterinaries : null;
+    return veterinaries;
 }
 
 module.exports = veterinaryService;
