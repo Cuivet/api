@@ -3,14 +3,14 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     let species = [
-      {name: 'Perro', createdAt: new Date(), updatedAt: new Date()},
-      {name: 'Gato', createdAt: new Date(), updatedAt: new Date()},
-      {name: 'Ave', createdAt: new Date(), updatedAt: new Date()},
+      {id:"1", name: 'Perro', createdAt: new Date(), updatedAt: new Date()},
+      {id:"2", name: 'Gato', createdAt: new Date(), updatedAt: new Date()},
+      {id:"3", name: 'Ave', createdAt: new Date(), updatedAt: new Date()},
     ]
 
     return queryInterface.bulkInsert('specie',species,{} );
   },
   down: (queryInterface, Sequelize) => {
-      return queryInterface.bulkDelete('Race', null, {});
+      return queryInterface.bulkDelete('specie', null, {});
   }
 };

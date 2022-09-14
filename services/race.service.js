@@ -40,10 +40,10 @@ async function remove(id){
 }
 
 async function findBySpecieId(specieId){
-    var race = await Race.findAll({
+    var races = await Race.findAll({
         where: { specieId: specieId }
     });
-    return race;
+    return races;
 }
 
 module.exports = raceService;

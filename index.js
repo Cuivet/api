@@ -18,9 +18,9 @@ app.listen(3000,() => {
 
 
 function refreshDataBase(){
-    exec("npx sequelize-cli db:seed:undo", (error, stdout, stderr) => {
+    exec("npx sequelize-cli db:seed:undo:all", (error, stdout, stderr) => {
         if (error) {
-            console.log(`No se pudieron dropear las semillas. Error: ${error.message}`);
+            console.log(`No se pudieron dropear las semillas. Esto puede deberse a que es la primera vez que ejecuta el servidor. Error: ${error.message}`);
             return;
         }
         if (stderr) {
@@ -35,7 +35,7 @@ function refreshDataBase(){
 function writeDataBase(){
     exec("npx sequelize-cli db:seed:all", (error, stdout, stderr) => {
         if (error) {
-            console.log(`No se pudieron inicializar las semillas. Error: ${error.message}`);
+            console.log(`No se pudieron inicializar las semillas. Esto puede deberse a que es la primera vez que ejecuta el servidor. Error: ${error.message}`);
             return;
         }
         if (stderr) {
