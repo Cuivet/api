@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize'); // esta es la libreria sequelize
+const Sequelize = require('sequelize');
 const { exec } = require("child_process");
 
 const UserModel = require('./db/user.model');
@@ -15,7 +15,7 @@ const PetAssociationModel = require('./db/pet_association.model');
 const sequelize = new Sequelize('cuivet-api','root','rootpass',{
     host: 'localhost',
     dialect: 'mysql'
-}); //este seria el objeto sequelize
+});
 
 const User = UserModel(sequelize, Sequelize);
 const Person = PersonModel(sequelize, Sequelize);
@@ -40,7 +40,6 @@ Vet.belongsTo(VetOwner);
 PetAssociation.belongsTo(Pet);
 PetAssociation.belongsTo(Veterinary);
 PetAssociation.belongsTo(Vet);
-
 
 sequelize.sync({ force: false})
     .then(() => {

@@ -5,8 +5,6 @@ const userService = require('../../services/user.service');
 var cors = require('cors');
 router.use(cors());
 
-// decidimos mezclar el route(resources) con lo que en otros proyectos suele ser el controller para no tener tantos archivos (ya que no será un proyecto tan grande)
-
 router.post('/register',[   check('user.password','El password es obligatorio').not().isEmpty(),
                             check('user.email','El email es incorrecto').isEmail()
                         ], async (req, res) => {
