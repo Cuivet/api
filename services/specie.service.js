@@ -1,10 +1,12 @@
 const { Specie } = require('../models/db');
+const raceService = require('./race.service');
 
 var specieService = {
     save: save,
     findOne: findOne,
     findAll: findAll,
     remove: remove,
+    findAllWithRaces: findAllWithRaces
 }
 
 async function save(reqSpecie){
@@ -29,6 +31,21 @@ async function findOne(id){
 async function findAll(){
     const species = await Specie.findAll();
     return species;
+}
+
+async function findAllWithRaces(){
+    const species = await Specie.findAll();
+    const races = await raceService.findAll();
+    var racesXspecie = [];
+    species.forEach(specie => {
+        racesOfSpecie = races.filter( race => race.specieId === specie.id);
+        racesXspecie.push( 
+        {
+        specie: specie,
+        race: racesOfSpecie 
+        })
+    });
+    return racesXspecie;
 }
 
 async function remove(id){
