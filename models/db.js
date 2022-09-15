@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize'); // esta es la libreria sequelize
+const { exec } = require("child_process");
 
 const UserModel = require('./db/user.model');
 const PersonModel = require('./db/person.model');
@@ -43,6 +44,17 @@ PetAssociation.belongsTo(Vet);
 
 sequelize.sync({ force: false})
     .then(() => {
+        exec("npx sequelize-cli db:seed:all", (error, stdout, stderr) => {
+            if (error) {
+                console.log(`No se pudieron inicializar las semillas. Esto puede deberse a que la tabla ya estaba poblada. Error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.log(`Se inicializaron las semillas con stderr: ${stderr}`);
+                return;
+            }
+            console.log(`Se inicializaron las semillas con stdout: ${stdout}`);
+        });
         console.log('Tablas sincronizadas');
     });
 
