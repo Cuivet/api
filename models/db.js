@@ -37,6 +37,7 @@ Pet.belongsTo(Tutor);
 Pet.belongsTo(Race);
 Race.belongsTo(Specie);
 Vet.belongsTo(VetOwner);
+Vet.belongsTo(Veterinary);
 PetAssociation.belongsTo(Pet);
 PetAssociation.belongsTo(Veterinary);
 PetAssociation.belongsTo(Vet);

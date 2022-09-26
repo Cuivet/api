@@ -6,7 +6,8 @@ var veterinaryService = {
     findAll: findAll,
     remove: remove,
     findByUserId: findByUserId,
-    findByFilter: findByFilter
+    findByFilter: findByFilter,
+    findOneByMP: findOneByMP
 }
 
 async function save(reqVeterinary){
@@ -24,6 +25,13 @@ async function save(reqVeterinary){
 async function findOne(id){
     const veterinary = await Veterinary.findOne({
         where: { id: id }
+    });
+    return veterinary;
+}
+
+async function findOneByMP(mp){
+    const veterinary = await Veterinary.findOne({
+        where: { mp: mp }
     });
     return veterinary;
 }
