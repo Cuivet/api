@@ -1,11 +1,20 @@
 const { Vet } = require('../models/db');
+const veterinaryService = require('./veterinary.service');
+const personService = require('./person.service');
+const moment = require('moment/moment');
+
+
+var temporalRegentAssociations = [];
 
 var vetService = {
     save: save,
     findOne: findOne,
     findAll: findAll,
     remove: remove,
-    findAllByVetOwnerId: findAllByVetOwnerId
+    findAllByVetOwnerId: findAllByVetOwnerId,
+    saveTemporalAssociation: saveTemporalAssociation,
+    findTemporalAssociationByCode: findTemporalAssociationByCode,
+    findAllByRegentId: findAllByRegentId,
 }
 
 async function save(reqVet){
@@ -21,10 +30,16 @@ async function save(reqVet){
 }
 
 async function findOne(id){
-    const vet = await Vet.findAll({
+    const vet = await Vet.findOne({
         where: { id: id }
     });
     return vet;
+}
+
+async function findByFilter(filter){
+    var vets = await Vet.findAll(filter);
+    vets = vets ? vets : null;
+    return vets;
 }
 
 async function findAll(){
@@ -40,10 +55,95 @@ async function remove(id){
 }
 
 async function findAllByVetOwnerId(vetOwnerId){
-    var vet = await Vet.findAll({
-        where: { vetOwnerId: vetOwnerId }
-    });
-    return vet;
+    vetData = [];
+    
+    var vets = await Vet.findAll({ where: { vetOwnerId: vetOwnerId }});
+
+    const veterinariesIds = vets.map( vet => vet.veterinaryId);
+    const veterinaries = await veterinaryService.findByFilter({where: { id: veterinariesIds }});
+    const userIds = veterinaries.map( veterinary => veterinary.userId);
+    const persons = await personService.findByFilter({where: { userId: userIds }});
+
+    
+    if (vets.length) {
+        vets.forEach(vet => {
+            var veterinary = null;
+            var person = null;
+            if (vet.veterinaryId) {
+                veterinary = veterinaries.filter(veterinary => veterinary.id === vet.veterinaryId)[0];
+                person = persons.filter(person => person.userId === veterinary.userId)[0];
+            }
+            vetData.push({
+                vet,
+                veterinaryData: veterinary ? {veterinary:veterinary, person:person} : null
+            });
+        });
+    }
+    return vetData;
 }
+
+async function saveTemporalAssociation(reqRegentAssociation){
+    const temporalRegentAssociation = {
+        mp: reqRegentAssociation.mp,
+        vetId: reqRegentAssociation.vetId,
+        code: Math.floor(100000 + Math.random() * 900000),
+        time: moment()
+    }
+    temporalRegentAssociations.push(temporalRegentAssociation);
+    return returnCompleteTemporalAssociation(temporalRegentAssociation);
+}
+
+async function findTemporalAssociationByCode(associationCode){
+    temporalRegentAssociation = temporalRegentAssociations.find(temporalRegentAssociation => temporalRegentAssociation.code == associationCode);
+    if( temporalRegentAssociation === undefined ){
+        return { error: 'No existe dicha asociacion' }
+    }
+    return returnCompleteTemporalAssociation(temporalRegentAssociation);
+}
+
+async function returnCompleteTemporalAssociation(temporalRegentAssociation){
+    const veterinary = await veterinaryService.findOneByMP(temporalRegentAssociation.mp);
+    const veterinaryPerson = await personService.findByUserId(veterinary.userId);
+    const vet = await Vet.findOne({
+        where : {id:temporalRegentAssociation.vetId}
+    })
+    return  {   veterinaryData: { veterinary: veterinary, person: veterinaryPerson },
+                vetData: { vet: vet},
+                code: temporalRegentAssociation.code
+            };
+}
+
+async function findAllByRegentId(veterinaryId){
+    var vets = await Vet.findAll({
+        where: { veterinaryId: veterinaryId }
+    });
+    vets = vets ? vets : null;
+    return vets;
+}
+
+// async function findRegentPersonByVetId(vetId){
+//     const vet = await Vet.findOne({
+//         where: {id : vetId}
+//     });
+//     const regent = await veterinaryService.findByFilter({
+//         where: {id : vet.veterinaryId}
+//     });
+//     const person = await personService.findByFilter({
+//         where: {userId : regent[0].userId}
+//     });
+//     regentXvet = {
+//         vet:vet,
+//         regent:regent,
+//         person:person,
+//     }
+//     return regentXvet;
+// }
+
+
+async function algo (){
+    
+}
+
+
 
 module.exports = vetService;

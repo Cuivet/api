@@ -37,4 +37,25 @@ router.delete('/:id', async (req,res) => {
     res.json(response);
 });
 
+router.post('/registerTemporalAssociation', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const newTemporalRegentAssociation = await vetService.saveTemporalAssociation(req.body);
+    res.json(newTemporalRegentAssociation);
+});
+
+router.get('/temporalAssociationByCode/:code', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const temporalRegentAssociation = await vetService.findTemporalAssociationByCode(req.params.code);
+    res.json(temporalRegentAssociation);
+});
+
+router.get('/allByRegentId/:id', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const vets = await vetService.findAllByRegentId(req.params.id);
+    res.json(vets);
+});
+
+
+
+
 module.exports = router;
