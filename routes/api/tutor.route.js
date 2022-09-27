@@ -13,6 +13,16 @@ router.get('/:id', async (req,res) => {
     res.json(tutor);
 });
 
+router.get('/tutorDataByDni/:dni', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    try{
+        const tutorData = await tutorService.findTutorDataByDni(req.params.dni);
+        res.json(tutorData);
+    } catch {
+        res.status(500).send('DNI no existente');
+    }
+});
+
 router.post('/', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const newTutor = await tutorService.save(req.body);
