@@ -10,8 +10,8 @@ var petAssociationService = {
     save: save,
     remove: remove,
     findAllByPetId: findAllByPetId,
-    findAllByTutorId: findAllByTutorId,
-    findAllByVeterinaryId: findAllByVeterinaryId,
+    findAllDataByTutorId: findAllDataByTutorId,
+    findAllDataByVeterinaryId: findAllDataByVeterinaryId,
     saveTemporalAssociation: saveTemporalAssociation,
     findTemporalAssociationByCode: findTemporalAssociationByCode
 }
@@ -41,46 +41,43 @@ async function findAllByPetId(petId){
     return petAssociation;
 }
 
-async function findAllByTutorId(tutorId){
-    const pets = await petService.findByTutorId(tutorId);
-    const petIds = pets.map( pet => pet.id);
-    const petAssociations = await PetAssociation.findAll({ where: { petId: petIds } });
-    const veterinariesIds = petAssociations.map( petAssociation => petAssociation.veterinaryId);
-    const veterinaries = await veterinaryService.findByFilter({where: { id: veterinariesIds }});
-    const userIds = veterinaries.map( veterinary => veterinary.userId);
-    const persons = await personService.findByFilter({where: { userId: userIds }});
-
-    vetXpets = [];
-    veterinaries.forEach(async function eachVeterinary(veterinary) {
-        veterinaryPetAssociations = petAssociations.filter(petAssociation => petAssociation.veterinaryId === veterinary.id);
-        petIdsFromAsoc = veterinaryPetAssociations.map( veterinaryPetAssociation => veterinaryPetAssociation.petId);
-        petsFromAsoc = [];
-        petIdsFromAsoc.forEach(petId => {
-            petsFromAsoc.push(pets.filter(pet => petId === pet.id)[0]);
-        });
-        const veterinaryPerson = persons.filter( person => person.userId = veterinary.userId)[0];
-        vetXpets.push({ veterinaryData: { veterinary: veterinary, person: veterinaryPerson }, pets: petsFromAsoc });
-    })
-    return vetXpets;
+async function findAllDataByTutorId(tutorId){
+    return findAllPetAssociationData(null, tutorId);
 }
 
-async function findAllByVeterinaryId(veterinaryId){
-    const petAssociations = await PetAssociation.findAll({ where: { veterinaryId: veterinaryId } });
-    const petIds = petAssociations.map( petAssociation => petAssociation.petId);
-    const pets = await petService.findByFilter({where: { id: petIds }});
-    const tutorIds = pets.map( pet => pet.tutorId);
-    const tutors = await tutorService.findByFilter({where: { id: tutorIds }});
-    const userIds = tutors.map( tutor => tutor.userId);
-    const persons = await personService.findByFilter({where: { userId: userIds }});
+async function findAllDataByVeterinaryId(veterinaryId){
+    return findAllPetAssociationData(veterinaryId, null);
+}
 
-    var vetXpets = [];
-    pets.forEach(async function eachPet(pet) {
-        tutor = tutors.filter(tutor => tutor.id === pet.tutorId)[0];
-        tutorPerson = persons.filter(person => person.userId === tutor.userId)[0];
-        vetXpets.push({ tutorData: { tutor: tutor, person: tutorPerson }, pet: pet });
+async function findAllPetAssociationData(veterinaryId, tutorId) {
+    let petAssociations = [];
+    let pets = [];
+
+    if(veterinaryId) {
+        petAssociations = await PetAssociation.findAll({where: {veterinaryId: veterinaryId}});
+        const petIds = petAssociations.map(petAssociation => petAssociation.petId);
+        pets = await petService.findByFilter({where: {id: petIds}});
+    }
+    if(tutorId) {
+        pets = await petService.findByTutorId(tutorId);
+        const petByTutorIds = pets.map( pet => pet.id);
+        petAssociations = await PetAssociation.findAll({where: { petId: petByTutorIds }});
+    }
+
+    tutorDataList = await tutorService.findAllTutorDataByIds(pets.map(pet => pet.tutorId));
+    veterinaryDataList = await veterinaryService.findAllVeterinaryDataByIds(petAssociations.map(petAssociation => petAssociation.veterinaryId));
+
+    var petAssociationDataList = [];
+    petAssociations.forEach(async function eachPet(petAssociation) {
+        pet = pets.find(pet => pet.id === petAssociation.petId);
+        petAssociationDataList.push(
+            { 
+                veterinaryData: veterinaryDataList.find(veterinaryData => veterinaryData.veterinary.id === petAssociation.veterinaryId),
+                tutorData: tutorDataList.find(tutorData => tutorData.tutor.id === pet.tutorId),
+                pet: pet
+            });
     });
-
-    return vetXpets;
+    return petAssociationDataList;
 }
 
 async function saveTemporalAssociation(reqPetAssociation){

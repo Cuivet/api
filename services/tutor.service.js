@@ -1,4 +1,5 @@
 const { Tutor } = require('../models/db');
+const personService = require('./person.service');
 
 var tutorService = {
     save: save,
@@ -6,7 +7,10 @@ var tutorService = {
     findAll: findAll,
     remove: remove,
     findByUserId: findByUserId,
-    findByFilter: findByFilter
+    findByFilter: findByFilter,
+    findTutorDataById: findTutorDataById,
+    findAllTutorDataByIds: findAllTutorDataByIds,
+    findTutorDataByDni: findTutorDataByDni
 }
 
 async function save(reqTutor){
@@ -52,6 +56,27 @@ async function findByFilter(filter){
     var tutors = await Tutor.findAll(filter);
     tutors = tutors ? tutors : null;
     return tutors;
+}
+
+async function findTutorDataById(){
+    return null;
+}
+
+async function findTutorDataByDni(dni){
+    const tutorPerson = await personService.findByFilter({where: { dni: dni }});
+    const tutor = await tutorService.findByFilter({where: { userId: tutorPerson[0].userId }});
+    return {tutor: tutor[0], person: tutorPerson[0]};
+}
+
+async function findAllTutorDataByIds(tutorIds){
+    tutorDataList = [];
+    const tutors = await tutorService.findByFilter({where: { id: tutorIds }});
+    const tutorUserIds = tutors.map( tutor => tutor.userId );
+    const tutorPersons = await personService.findByFilter({where: { userId: tutorUserIds }});
+    tutors.forEach(tutor => {
+        tutorDataList.push({tutor: tutor, person: tutorPersons.find( person => person.userId === tutor.userId )})
+    });
+    return tutorDataList;
 }
 
 module.exports = tutorService;
