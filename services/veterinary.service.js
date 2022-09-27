@@ -8,6 +8,7 @@ var veterinaryService = {
     remove: remove,
     findByUserId: findByUserId,
     findByFilter: findByFilter,
+    findOneByMP: findOneByMP,
     findVeterinaryDataById: findVeterinaryDataById,
     findAllVeterinaryDataByIds: findAllVeterinaryDataByIds
 }
@@ -27,6 +28,13 @@ async function save(reqVeterinary){
 async function findOne(id){
     const veterinary = await Veterinary.findOne({
         where: { id: id }
+    });
+    return veterinary;
+}
+
+async function findOneByMP(mp){
+    const veterinary = await Veterinary.findOne({
+        where: { mp: mp }
     });
     return veterinary;
 }

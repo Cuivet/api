@@ -13,6 +13,12 @@ router.get('/:id', async (req,res) => {
     res.json(veterinary);
 });
 
+router.get('/byMP/:mp', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const veterinary = await veterinaryService.findOneByMP(req.params.mp);
+    res.json(veterinary);
+});
+
 router.post('/', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const newVeterinary = await veterinaryService.save(req.body);
