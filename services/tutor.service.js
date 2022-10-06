@@ -58,8 +58,10 @@ async function findByFilter(filter){
     return tutors;
 }
 
-async function findTutorDataById(){
-    return null;
+async function findTutorDataById(id){
+    const tutor = await findOne(id);
+    const person = await personService.findByUserId(tutor.userId);
+    return {tutor: tutor, person: person};
 }
 
 async function findTutorDataByDni(dni){
