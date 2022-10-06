@@ -65,8 +65,10 @@ async function findByFilter(filter){
     return veterinaries;
 }
 
-async function findVeterinaryDataById(){
-    return null;
+async function findVeterinaryDataById(id){
+    const veterinary = await findOne(id);
+    const person = await personService.findByUserId(veterinary.userId);
+    return {tutor: veterinary, person: person};
 }
 
 async function findAllVeterinaryDataByIds(veterinaryIds){
