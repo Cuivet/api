@@ -13,8 +13,13 @@ const apiPetRouter = require('./api/pet.route');
 const apiVetRouter = require('./api/vet.route');
 const apiRaceRouter = require('./api/race.route');
 const apiSpecieRouter = require('./api/specie.route');
-const apiPetAssociationRouter = require('./api/pet_association.route')
-const apiClinicalRecordRouter = require('./api/clinical_record.route')
+const apiPetAssociationRouter = require('./api/pet_association.route');
+const apiClinicalRecordRouter = require('./api/clinical_record.route');
+const apiAnamnesisQuestionRouter = require('./api/anamnesis_question.route');
+const apiComplementaryStudyTypeRouter = require('./api/complementary_study_type.route');
+const apiDiagnosisTypeRouter = require('./api/diagnosis_type.route');
+const apiDrugRouter = require('./api/drug.route');
+const apiTreatmentTypeRouter = require('./api/treatment_type.route');
 
 router.use('/user', apiUserRouter);
 router.use('/person', middleware.checkToken, apiPersonRouter);
@@ -26,6 +31,11 @@ router.use('/vet', middleware.checkToken, apiVetRouter);
 router.use('/race', middleware.checkToken, apiRaceRouter);
 router.use('/specie', middleware.checkToken, apiSpecieRouter);
 router.use('/pet-association', middleware.checkToken, apiPetAssociationRouter);
-router.use('/clinical-record', middleware.checkToken, apiClinicalRecordRouter); 
+router.use('/clinical-record', middleware.checkToken, apiClinicalRecordRouter);
+router.use('/anamnesis-question', middleware.checkToken, apiAnamnesisQuestionRouter);
+router.use('/complementary-study-type', middleware.checkToken, apiComplementaryStudyTypeRouter);
+router.use('/diagnosis-type', middleware.checkToken, apiDiagnosisTypeRouter);
+router.use('/drug', middleware.checkToken, apiDrugRouter);
+router.use('/treatment-type', middleware.checkToken, apiTreatmentTypeRouter);
 
 module.exports = router;
