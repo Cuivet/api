@@ -96,7 +96,7 @@ async function findTemporalAssociationByCode(associationCode){
     //sino, si mando un associationCode de otra persona puedo generar la asociacion
     temporalPetAssociation = temporalPetAssociations.find(temporalPetAssociation => temporalPetAssociation.code == associationCode);
     if( temporalPetAssociation === undefined ){
-        return { error: 'No existe dicha asociacion' }
+        throw new Exception();
     }
     return returnCompleteTemporalAssociation(temporalPetAssociation);
 }

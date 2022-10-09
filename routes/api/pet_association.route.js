@@ -39,8 +39,11 @@ router.post('/registerTemporalAssociation', async (req,res) => {
 
 router.get('/temporalAssociationByCode/:code', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const temporalPetAssociation = await petAssociationService.findTemporalAssociationByCode(req.params.code);
-    res.json(temporalPetAssociation);
+    try{
+        res.json(await petAssociationService.findTemporalAssociationByCode(req.params.code));
+    } catch {
+        res.status(500).send('Asociación no existente');
+    }
 });
 
 module.exports = router;
