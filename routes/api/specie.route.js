@@ -3,7 +3,7 @@ const specieService = require('../../services/specie.service');
 
 router.get('/all', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const species = await specieService.findAllWithRaces();
+    const species = await specieService.findAll();
     res.json(species);
 });
 
