@@ -29,6 +29,11 @@ const PresumptiveDiagnosisItemModel = require('./db/presumptive_diagnosis_item.m
 const ComplementaryStudyModel = require('./db/complementary_study.model');
 const DiagnosisItemModel = require('./db/diagnosis_item.model');
 const DiagnosisItemTreatmentModel = require('./db/diagnosis_item_treatment.model');
+const HairColorModel = require('./db/hair_color.model');
+const HairLengthModel = require('./db/hair_length.model');
+const PetSizeModel = require('./db/pet_size.model');
+
+
 
 const sequelize = new Sequelize('cuivet-api','root','rootpass',{
     host: 'localhost',
@@ -64,6 +69,9 @@ const PresumptiveDiagnosisItem = PresumptiveDiagnosisItemModel(sequelize, Sequel
 const ComplementaryStudy = ComplementaryStudyModel(sequelize, Sequelize);
 const DiagnosisItem = DiagnosisItemModel(sequelize, Sequelize);
 const DiagnosisItemTreatment = DiagnosisItemTreatmentModel(sequelize, Sequelize);
+const HairColor = HairColorModel(sequelize, Sequelize);
+const HairLength = HairLengthModel(sequelize, Sequelize);
+const PetSize = PetSizeModel(sequelize, Sequelize);
 
 // Relaciones entre entidades
 Person.belongsTo(User);
@@ -72,6 +80,9 @@ Tutor.belongsTo(User);
 VetOwner.belongsTo(User);
 Pet.belongsTo(Tutor);
 Pet.belongsTo(Race);
+Pet.belongsTo(HairColor);
+Pet.belongsTo(HairLength);
+Pet.belongsTo(PetSize);
 Race.belongsTo(Specie);
 Vet.belongsTo(VetOwner);
 Vet.belongsTo(Veterinary);
@@ -99,6 +110,8 @@ DiagnosisItem.belongsTo(Diagnosis);
 DiagnosisItemTreatment.belongsTo(DiagnosisItem);
 DiagnosisItemTreatment.belongsTo(TreatmentType);
 DiagnosisItemTreatment.belongsTo(Drug);
+
+
 
 sequelize.sync({ force: false })
     .then(() => {

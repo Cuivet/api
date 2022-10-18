@@ -4,6 +4,9 @@ module.exports = (sequelize, type) => {
         name: type.STRING,
         birth: type.DATE,
         isMale: type.BOOLEAN,
+        castrationDate: type.DATE, 
+        haveChip: type.BOOLEAN, 
+        aspects: type.STRING, 
     },{
         freezeTableName: true
     });
