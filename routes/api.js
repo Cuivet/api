@@ -20,6 +20,9 @@ const apiComplementaryStudyTypeRouter = require('./api/complementary_study_type.
 const apiDiagnosisTypeRouter = require('./api/diagnosis_type.route');
 const apiDrugRouter = require('./api/drug.route');
 const apiTreatmentTypeRouter = require('./api/treatment_type.route');
+const apiHairColorRouter = require('./api/hair_color.route');
+const apiHairLengthRouter = require('./api/hair_length.route');
+const apiPetSizeRouter = require('./api/pet_size.route');
 
 router.use('/user', apiUserRouter);
 router.use('/person', middleware.checkToken, apiPersonRouter);
@@ -37,5 +40,8 @@ router.use('/complementary-study-type', middleware.checkToken, apiComplementaryS
 router.use('/diagnosis-type', middleware.checkToken, apiDiagnosisTypeRouter);
 router.use('/drug', middleware.checkToken, apiDrugRouter);
 router.use('/treatment-type', middleware.checkToken, apiTreatmentTypeRouter);
+router.use('/hair-color', middleware.checkToken, apiHairColorRouter);
+router.use('/hair-length', middleware.checkToken, apiHairLengthRouter);
+router.use('/pet-size', middleware.checkToken, apiPetSizeRouter);
 
 module.exports = router;
