@@ -3,7 +3,6 @@ const veterinaryService = require('./veterinary.service');
 const personService = require('./person.service');
 const moment = require('moment/moment');
 
-
 var temporalRegentAssociations = [];
 
 var vetService = {
@@ -11,10 +10,12 @@ var vetService = {
     findOne: findOne,
     findAll: findAll,
     remove: remove,
+    findByFilter: findByFilter,
     findAllByVetOwnerId: findAllByVetOwnerId,
     saveTemporalAssociation: saveTemporalAssociation,
     findTemporalAssociationByCode: findTemporalAssociationByCode,
     findAllByRegentId: findAllByRegentId,
+    findAllDataByVetId: findAllDataByVetId
 }
 
 async function save(reqVet){
@@ -54,17 +55,14 @@ async function remove(id){
     return {message: 'Vet con id ' + id + ' borrado'};
 }
 
+//findAllVetsDataByVetOwnerId //dejaría de usarlo y usaría solo lo que haga en veterinariesassociatios. Esta la usaba para que el owner vea a quienes tiene como regente en cada una de sus vets
 async function findAllByVetOwnerId(vetOwnerId){
     vetData = [];
-    
     var vets = await Vet.findAll({ where: { vetOwnerId: vetOwnerId }});
-
     const veterinariesIds = vets.map( vet => vet.veterinaryId);
     const veterinaries = await veterinaryService.findByFilter({where: { id: veterinariesIds }});
     const userIds = veterinaries.map( veterinary => veterinary.userId);
     const persons = await personService.findByFilter({where: { userId: userIds }});
-
-    
     if (vets.length) {
         vets.forEach(vet => {
             var veterinary = null;
@@ -82,11 +80,27 @@ async function findAllByVetOwnerId(vetOwnerId){
     return vetData;
 }
 
+async function findAllDataByVetId(vetId){
+    vetData = [];
+    var vet = await Vet.findOne({
+        where: { id: vetId }
+    });
+    const regentId = vet.veterinaryId;
+    const regent = await veterinaryService.findVeterinaryDataById(regentId);
+    if (vet!==null) {
+        vetData.push({
+            vet,
+            regentData: regent ? {regent:regent} : null
+        });
+    }
+    return vetData;
+}
+
 async function saveTemporalAssociation(reqRegentAssociation){
     const temporalRegentAssociation = {
         mp: reqRegentAssociation.mp,
         vetId: reqRegentAssociation.vetId,
-        code: Math.floor(100000 + Math.random() * 900000),
+        code: 'R'+Math.floor(100000 + Math.random() * 900000),
         time: moment()
     }
     temporalRegentAssociations.push(temporalRegentAssociation);
@@ -120,30 +134,5 @@ async function findAllByRegentId(veterinaryId){
     vets = vets ? vets : null;
     return vets;
 }
-
-// async function findRegentPersonByVetId(vetId){
-//     const vet = await Vet.findOne({
-//         where: {id : vetId}
-//     });
-//     const regent = await veterinaryService.findByFilter({
-//         where: {id : vet.veterinaryId}
-//     });
-//     const person = await personService.findByFilter({
-//         where: {userId : regent[0].userId}
-//     });
-//     regentXvet = {
-//         vet:vet,
-//         regent:regent,
-//         person:person,
-//     }
-//     return regentXvet;
-// }
-
-
-async function algo (){
-    
-}
-
-
 
 module.exports = vetService;

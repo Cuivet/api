@@ -10,7 +10,8 @@ var veterinaryService = {
     findByFilter: findByFilter,
     findOneByMP: findOneByMP,
     findVeterinaryDataById: findVeterinaryDataById,
-    findAllVeterinaryDataByIds: findAllVeterinaryDataByIds
+    findAllVeterinaryDataByIds: findAllVeterinaryDataByIds,
+    findVeterinaryDataByMP: findVeterinaryDataByMP
 }
 
 async function save(reqVeterinary){
@@ -69,6 +70,13 @@ async function findVeterinaryDataById(id){
     const veterinary = await findOne(id);
     const person = await personService.findByUserId(veterinary.userId);
     return {tutor: veterinary, person: person};
+}
+
+async function findVeterinaryDataByMP(mp){
+    const veterinaryData = await veterinaryService.findOneByMP(mp);
+    const veterinaryPerson = await personService.findByFilter({where: { id: veterinaryData.userId }});
+    const veteriary = await veterinaryService.findByFilter({where: { userId: veterinaryPerson[0].userId }});
+    return {veteriary: veteriary[0], person: veterinaryPerson[0]};
 }
 
 async function findAllVeterinaryDataByIds(veterinaryIds){

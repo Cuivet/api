@@ -29,6 +29,7 @@ const PresumptiveDiagnosisItemModel = require('./db/presumptive_diagnosis_item.m
 const ComplementaryStudyModel = require('./db/complementary_study.model');
 const DiagnosisItemModel = require('./db/diagnosis_item.model');
 const DiagnosisItemTreatmentModel = require('./db/diagnosis_item_treatment.model');
+const VeterinaryAssociationModel = require('./db/veteriary_association.model');
 
 const sequelize = new Sequelize('cuivet-api','root','rootpass',{
     host: 'localhost',
@@ -64,6 +65,7 @@ const PresumptiveDiagnosisItem = PresumptiveDiagnosisItemModel(sequelize, Sequel
 const ComplementaryStudy = ComplementaryStudyModel(sequelize, Sequelize);
 const DiagnosisItem = DiagnosisItemModel(sequelize, Sequelize);
 const DiagnosisItemTreatment = DiagnosisItemTreatmentModel(sequelize, Sequelize);
+const VeterinaryAssociation = VeterinaryAssociationModel(sequelize, Sequelize);
 
 // Relaciones entre entidades
 Person.belongsTo(User);
@@ -99,6 +101,8 @@ DiagnosisItem.belongsTo(Diagnosis);
 DiagnosisItemTreatment.belongsTo(DiagnosisItem);
 DiagnosisItemTreatment.belongsTo(TreatmentType);
 DiagnosisItemTreatment.belongsTo(Drug);
+VeterinaryAssociation.belongsTo(Vet);
+VeterinaryAssociation.belongsTo(Veterinary);
 
 sequelize.sync({ force: false })
     .then(() => {
@@ -144,5 +148,6 @@ module.exports = {
     PresumptiveDiagnosisItem,
     ComplementaryStudy,
     DiagnosisItem,
-    DiagnosisItemTreatment
+    DiagnosisItemTreatment,
+    VeterinaryAssociation
 }

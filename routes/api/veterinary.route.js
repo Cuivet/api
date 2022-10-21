@@ -19,6 +19,16 @@ router.get('/byMP/:mp', async (req,res) => {
     res.json(veterinary);
 });
 
+router.get('/VeterinaryDataByMP/:mp', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    try{
+        const veterinaryData = await veterinaryService.findVeterinaryDataByMP(req.params.mp);
+        res.json(veterinaryData);
+    } catch {
+        res.status(500).send('MP no existente');
+    }
+});
+
 router.post('/', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const newVeterinary = await veterinaryService.save(req.body);
