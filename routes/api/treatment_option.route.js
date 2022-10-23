@@ -1,10 +1,10 @@
 const router = require('express').Router();
-const treatmentTypeService = require('../../services/treatment_type.service');
+const treatmentOptionService = require('../../services/treatment_option.service');
 
 router.get('/all', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const treatmentTypes = await treatmentTypeService.findAll();
-    res.json(treatmentTypes);
+    const treatmentOptions = await treatmentOptionService.findAll();
+    res.json(treatmentOptions);
 });
 
 module.exports = router;

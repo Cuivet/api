@@ -23,6 +23,7 @@ const AnamnesisQuestionModel = require('./db/anamnesis_question.model');
 const ComplementaryStudyTypeModel = require('./db/complementary_study_type.model');
 const DiagnosisTypeModel = require('./db/diagnosis_type.model');
 const TreatmentTypeModel = require('./db/treatment_type.model');
+const TreatmentOptionModel = require('./db/treatment_option.model');
 const DrugModel = require('./db/drug.model');
 const AnamnesisItemModel = require('./db/anamnesis_item.model');
 const PresumptiveDiagnosisItemModel = require('./db/presumptive_diagnosis_item.model');
@@ -62,6 +63,7 @@ const AnamnesisQuestion = AnamnesisQuestionModel(sequelize, Sequelize);
 const ComplementaryStudyType = ComplementaryStudyTypeModel(sequelize, Sequelize);
 const DiagnosisType = DiagnosisTypeModel(sequelize, Sequelize);
 const TreatmentType = TreatmentTypeModel(sequelize, Sequelize);
+const TreatmentOption = TreatmentOptionModel(sequelize, Sequelize);
 const Drug = DrugModel(sequelize, Sequelize);
 const AnamnesisItem = AnamnesisItemModel(sequelize, Sequelize);
 const PresumptiveDiagnosisItem = PresumptiveDiagnosisItemModel(sequelize, Sequelize);
@@ -108,12 +110,11 @@ ComplementaryStudy.belongsTo(ComplementaryStudyType);
 DiagnosisItem.belongsTo(DiagnosisType);
 DiagnosisItem.belongsTo(Diagnosis);
 DiagnosisItemTreatment.belongsTo(DiagnosisItem);
-DiagnosisItemTreatment.belongsTo(TreatmentType);
+DiagnosisItemTreatment.belongsTo(TreatmentOption);
 DiagnosisItemTreatment.belongsTo(Drug);
+TreatmentOption.belongsTo(TreatmentType);
 VeterinaryAssociation.belongsTo(Vet);
 VeterinaryAssociation.belongsTo(Veterinary);
-
-
 
 sequelize.sync({ force: false })
     .then(() => {
@@ -160,8 +161,9 @@ module.exports = {
     ComplementaryStudy,
     DiagnosisItem,
     DiagnosisItemTreatment,
-    VeterinaryAssociation,
     HairColor,
     HairLength,
-    PetSize
+    PetSize,
+    TreatmentOption,
+    VeterinaryAssociation
 }
