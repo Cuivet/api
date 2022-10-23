@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const diagnosisTypeService = require('../../services/anamnesis_question.service');
+const diagnosisTypeService = require('../../services/diagnosis_type.service');
 
 router.get('/all', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
