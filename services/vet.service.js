@@ -15,7 +15,8 @@ var vetService = {
     saveTemporalAssociation: saveTemporalAssociation,
     findTemporalAssociationByCode: findTemporalAssociationByCode,
     findAllByRegentId: findAllByRegentId,
-    findAllDataByVetId: findAllDataByVetId
+    findAllDataByVetId: findAllDataByVetId,
+    findAllVetDataByIds: findAllVetDataByIds
 }
 
 async function save(reqVet){
@@ -133,6 +134,21 @@ async function findAllByRegentId(veterinaryId){
     });
     vets = vets ? vets : null;
     return vets;
+}
+
+async function findAllVetDataByIds(ids) {
+    vetDataList = [];
+    var vets = await Vet.findAll({ where: { id:ids } });
+    var regents = await veterinaryService.findAllVeterinaryDataByIds(vets.filter( vet => vet.veterinaryId != null ).map( vet => vet.veterinaryId ));
+    vets.forEach( vet => {
+        vetDataList.push(
+            {
+                vet: vet,
+                regentData: vet.veterinaryId ? regents.find(regent => regent.veterinary.id === vet.veterinaryId) : null
+            }
+        )
+    });
+    return vetDataList;
 }
 
 module.exports = vetService;

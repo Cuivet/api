@@ -12,7 +12,8 @@ var veterinaryAssociationService = {
     findAllDataByVetId: findAllDataByVetId,
     saveTemporalAssociation: saveTemporalAssociation,
     findTemporalAssociationByCode: findTemporalAssociationByCode,
-    findAllDataByRegentId: findAllDataByRegentId
+    findAllDataByRegentId: findAllDataByRegentId,
+    findAllDataByRegentOrVeterinary: findAllDataByRegentOrVeterinary
 }
 
 var temporalVeterinaryAssociations = [];
@@ -112,6 +113,49 @@ async function returnCompleteTemporalAssociation(temporalVeterinaryAssociation){
                 vetData: { vet: vet},
                 code: temporalVeterinaryAssociation.code
             };
+}
+
+async function findAllDataByRegentOrVeterinary(veterinaryId) {
+    vetAsDataList = [];
+
+    vetAsDataListByRegent = await findAllDataByRegentId(veterinaryId);
+    vetAsDataList.push.apply(vetAsDataList, vetAsDataListByRegent);
+
+    vetAsDataListByVeterinary = await findAllDataByVeterinaryId(veterinaryId);
+    vetAsDataList.push.apply(vetAsDataList, vetAsDataListByVeterinary);
+    
+    return vetAsDataList;
+}
+
+async function findAllDataByRegentId(regentId) {
+    vetAsDataListByRegent = [];
+    var vets = await vetService.findAllByRegentId(regentId);
+    var vetDataList = await vetService.findAllVetDataByIds(vets.map( vet => vet.id ));
+    vets.forEach( vet => {
+        vetAsDataListByRegent.push(
+            {
+                vetData: vetDataList.find( vdl => vdl.vet.id === vet.id),
+                veterinaryData: vetDataList.find( vdl => vdl.vet.id === vet.id).regentData
+            }
+        )
+    })
+    return vetAsDataListByRegent;
+}
+
+async function findAllDataByVeterinaryId(veterinaryId) {
+    vetAsDataListByVeterinary = [];
+    var vetAssociationList = await VeterinaryAssociation.findAll({ where: { veterinaryId: veterinaryId }});
+    var vetDataList = await vetService.findAllVetDataByIds(vetAssociationList.map( val => val.vetId ));
+    var veterinaryDataList = await veterinaryService.findAllVeterinaryDataByIds(vetAssociationList.map( val => val.veterinaryId ));
+    vetAssociationList.forEach( val => {
+        vetAsDataListByVeterinary.push(
+            {
+                vetData: vetDataList.find( vdl => vdl.vet.id === val.id),
+                veterinaryData: veterinaryDataList.find( vydl => vydl.veterinary.id === val.veterinaryId)
+            }
+        )
+    })
+    return vetAsDataListByVeterinary;
 }
 
 module.exports = veterinaryAssociationService;
