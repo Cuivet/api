@@ -150,7 +150,7 @@ async function findAllDataByVeterinaryId(veterinaryId) {
     vetAssociationList.forEach( val => {
         vetAsDataListByVeterinary.push(
             {
-                vetData: vetDataList.find( vdl => vdl.vet.id === val.id),
+                vetData: vetDataList.find( vdl => vdl.vet.id === val.vetId),
                 veterinaryData: veterinaryDataList.find( vydl => vydl.veterinary.id === val.veterinaryId)
             }
         )
