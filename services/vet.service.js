@@ -15,7 +15,6 @@ var vetService = {
     saveTemporalAssociation: saveTemporalAssociation,
     findTemporalAssociationByCode: findTemporalAssociationByCode,
     findAllByRegentId: findAllByRegentId,
-    findAllDataByVetId: findAllDataByVetId,
     findAllVetDataByIds: findAllVetDataByIds
 }
 
@@ -76,22 +75,6 @@ async function findAllByVetOwnerId(vetOwnerId){
                 vet,
                 veterinaryData: veterinary ? {veterinary:veterinary, person:person} : null
             });
-        });
-    }
-    return vetData;
-}
-
-async function findAllDataByVetId(vetId){
-    vetData = [];
-    var vet = await Vet.findOne({
-        where: { id: vetId }
-    });
-    const regentId = vet.veterinaryId;
-    const regent = await veterinaryService.findVeterinaryDataById(regentId);
-    if (vet!==null) {
-        vetData.push({
-            vet,
-            regentData: regent ? {regent:regent} : null
         });
     }
     return vetData;

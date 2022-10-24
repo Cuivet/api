@@ -13,12 +13,6 @@ router.get('/allByVetOwnerId/:vetOwnerId', async (req,res) => {
     res.json(vet);
 });
 
-router.get('/allDataByVetId/:vetId', async (req,res) => {
-    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const vet = await vetService.findAllDataByVetId(req.params.vetId);
-    res.json(vet);
-});
-
 router.get('/:id', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const vet = await vetService.findOne(req.params.id);
@@ -60,5 +54,11 @@ router.get('/allByRegentId/:id', async (req,res) => {
     const vets = await vetService.findAllByRegentId(req.params.id);
     res.json(vets);
 });
+
+router.get('/allVetDataByIds/:id', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const vets = await vetService.findAllVetDataByIds(req.params.id);
+    res.json(vets);
+}); 
 
 module.exports = router;
