@@ -73,10 +73,9 @@ async function findVeterinaryDataById(id){
 }
 
 async function findVeterinaryDataByMP(mp){
-    const veterinaryData = await veterinaryService.findOneByMP(mp);
-    const veterinaryPerson = await personService.findByFilter({where: { id: veterinaryData.userId }});
-    const veteriary = await veterinaryService.findByFilter({where: { userId: veterinaryPerson[0].userId }});
-    return {veteriary: veteriary[0], person: veterinaryPerson[0]};
+    const veterinary = await veterinaryService.findOneByMP(mp);
+    const veterinaryData = await veterinaryService.findAllVeterinaryDataByIds(veterinary.id);
+    return veterinaryData[0];
 }
 
 async function findAllVeterinaryDataByIds(veterinaryIds){
