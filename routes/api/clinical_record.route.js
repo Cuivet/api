@@ -15,8 +15,12 @@ router.get('/:id', async (req,res) => {
 
 router.post('/', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const newclinicalRecord = await clinicalRecordService.save(req.body);
-    res.json(newclinicalRecord);
+    try{
+        const newclinicalRecord = await clinicalRecordService.create(req.body);
+        res.json(newclinicalRecord);
+    } catch {
+        res.status(500).send('Información incorrecta');
+    }    
 });
 
 router.put('/', async (req,res) => {

@@ -5,9 +5,15 @@ const petService = require('./pet.service');
 const vetService = require('./vet.service');
 
 var clinicalRecordService = {
+    create: create,
     save: save,
     findOne: findOne,
     findAllByVeterinary: findAllByVeterinary
+}
+
+async function create(clinicalRecord) {
+    id = (await ClinicalRecord.create({petId: clinicalRecord.petId, vetId: clinicalRecord.vetId, veterinaryId: clinicalRecord.veterinaryId})).id;
+    return findOne(id);
 }
 
 async function save(clinicalRecordDTO){
