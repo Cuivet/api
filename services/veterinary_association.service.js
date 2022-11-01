@@ -10,7 +10,8 @@ var veterinaryAssociationService = {
     remove: remove,
     saveTemporalAssociation: saveTemporalAssociation,
     findTemporalAssociationByCode: findTemporalAssociationByCode,
-    findAllDataByRegentOrVeterinary: findAllDataByRegentOrVeterinary
+    findAllDataByRegentOrVeterinary: findAllDataByRegentOrVeterinary,
+    findAllVeterinariesByRegentId: findAllVeterinariesByRegentId
 }
 
 var temporalVeterinaryAssociations = [];
@@ -105,6 +106,23 @@ async function findAllDataByVeterinaryId(veterinaryId) {
         )
     })
     return vetAsDataListByVeterinary;
+}
+
+async function findAllVeterinariesByRegentId(regentId) {
+    veterinaryDataListByRegent = [];
+    vetAsDataListByRegent = await findAllDataByRegentId(regentId); //traigo toda la data para las que soy regente (vetData+veterinaryData[regente])
+    const vetIds = vetAsDataListByRegent.map(vet => vet.vetData.vet.id);//saco los ids de esas vets donde soy regete
+    var vetAssociationList = await VeterinaryAssociation.findAll({ where: { vetId: vetIds }});//busco todas las asociaciones que tienen las vets donde soy reg
+    var veterinaryDataList = await veterinaryService.findAllVeterinaryDataByIds(vetAssociationList.map( val => val.veterinaryId ));//toda la data de los co veterinarios
+    vetAssociationList.forEach( val => {
+        veterinaryDataListByRegent.push(
+            {   
+                vetData: vetDataList.find( vdl => vdl.vet.id === val.vetId),
+                coveterinaryData: veterinaryDataList.find( vydl => vydl.veterinary.id === val.veterinaryId)//la data de los covets de mis regentVets
+            }
+        )
+    })
+    return veterinaryDataListByRegent;
 }
 
 module.exports = veterinaryAssociationService;
