@@ -40,7 +40,10 @@ router.get('/allDataByRegentOrVeterinary/:veterinaryId', async (req,res) => {
     res.json(veterinaryAssociations);
 });
 
-// El endpoint de arriba es para traer las asociaciones de las que uno es regente o veterinario
-// Lo que falta ahora es traer las asociaciones de las que uno es regente o vetOwner (tal vez 2 endpoints separados)
+router.get('/allCoVeterinariesDataByRegent/:veterinaryId', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const veterinaryAssociations = await veterinaryAssociationService.findAllVeterinariesByRegentId(req.params.veterinaryId);
+    res.json(veterinaryAssociations);
+});
 
 module.exports = router;
