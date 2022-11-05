@@ -74,7 +74,8 @@ async function findAllPetAssociationData(veterinaryId, tutorId) {
             { 
                 veterinaryData: veterinaryDataList.find(veterinaryData => veterinaryData.veterinary.id === petAssociation.veterinaryId),
                 tutorData: tutorDataList.find(tutorData => tutorData.tutor.id === pet.tutorId),
-                pet: pet
+                pet: pet,
+                associationId: petAssociation.id
             });
     });
     return petAssociationDataList;
