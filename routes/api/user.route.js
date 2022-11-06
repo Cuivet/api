@@ -13,8 +13,11 @@ router.post('/register',[   check('user.password','El password es obligatorio').
     if( !errors.isEmpty()) {
         return res.status(422).json({ errores: errors.array()})
     }
-    const profile = await userService.registerUser(req.body);
-    res.json(profile);
+    try {
+        res.json(await userService.registerUser(req.body));
+    } catch (e){
+        res.status(500).send(e.message);
+    }
 });
 
 router.post('/login', async (req, res) => {

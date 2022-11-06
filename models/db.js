@@ -133,6 +133,7 @@ sequelize.sync({ force: false })
     });
 
 module.exports = {
+    sequelize,
     User,
     Person,
     Veterinary,
