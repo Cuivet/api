@@ -45,8 +45,11 @@ router.post('/registerTemporalAssociation', async (req,res) => {
 
 router.get('/temporalAssociationByCode/:code', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const temporalRegentAssociation = await vetService.findTemporalAssociationByCode(req.params.code);
-    res.json(temporalRegentAssociation);
+    try{
+        res.json(await vetService.findTemporalAssociationByCode(req.params.code));
+    } catch {
+        res.status(500).send('Asociación no existente');
+    }
 });
 
 router.get('/allByRegentId/:id', async (req,res) => {

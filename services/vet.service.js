@@ -94,7 +94,7 @@ async function saveTemporalAssociation(reqRegentAssociation){
 async function findTemporalAssociationByCode(associationCode){
     temporalRegentAssociation = temporalRegentAssociations.find(temporalRegentAssociation => temporalRegentAssociation.code == associationCode);
     if( temporalRegentAssociation === undefined ){
-        return { error: 'No existe dicha asociacion' }
+        throw new Exception();
     }
     return returnCompleteTemporalAssociation(temporalRegentAssociation);
 }
