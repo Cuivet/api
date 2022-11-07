@@ -104,18 +104,27 @@ const decodeToken = (token) => {
 
 async function checkMP(veterinary, person) {
     const mpDataList = await mpService.getMPs();
+    mpDataList.map( mpData => mpData.completeName = mpData.completeName.replace('¥','Ñ'))
     const foundMatch = mpDataList.find( mpData => mpData.mp === veterinary.mp);
     if (foundMatch === undefined){
         throw new Error('La matrícula ' + veterinary.mp + ' no existe en el registro del Colegio de Veterinarios de Córdoba, si la matricula es correcta contactese con nuestro soporte');
     }
-    // en ambos strings cambiar ¥ por Ñ, y ver si existen otros erroes en lo que trae la api
     foundLastName = foundMatch.completeName.substring(0, foundMatch.completeName.indexOf(',')).toUpperCase();
-    // falta comprobar si pone el apellido al reves, ejemplo bardin giraldez o giraldez bardin deberia dejar en ambas. tener en cuenta 3 o mas apellidos
+    foundLastName.match(/\b(\w+)\b/g).forEach( lastName => {
+        personLastNames = person.lastName.toUpperCase().match(/\b(\w+)\b/g);
+        existentLastName = personLastNames.find( personLastName => personLastName === lastName);
+        if(!existentLastName){
+            throw new Error('El nombre ' + person.name + ' ' + person.lastName + ' no coincide con el registrado por el Colegio de Veterinarios de Córdoba para esa matrícula');
+        }
+    });
     foundName = foundMatch.completeName.substring(foundMatch.completeName.indexOf(',')+2, foundMatch.completeName.length).toUpperCase();
-    // falta comprobar si pone el nombre al reves, ejemplo tomas daniel o daniel tomas deberia dejar en ambas. tener en cuenta 3 o mas nombres
-    if (!(foundLastName === person.lastName.toUpperCase() && foundName === person.name.toUpperCase())){
-        throw new Error('El nombre ' + person.name + ' ' + person.lastName + ' no coincide con el registrado por el Colegio de Veterinarios de Córdoba para esa matrícula');
-    }
+    foundName.match(/\b(\w+)\b/g).forEach( name => {
+        personNames = person.name.toUpperCase().match(/\b(\w+)\b/g);
+        existentName = personNames.find( personLastName => personLastName === name);
+        if(!existentName){
+            throw new Error('El nombre ' + person.name + ' ' + person.lastName + ' no coincide con el registrado por el Colegio de Veterinarios de Córdoba para esa matrícula');
+        }
+    });
     return;
 }
 
