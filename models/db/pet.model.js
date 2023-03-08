@@ -6,7 +6,8 @@ module.exports = (sequelize, type) => {
         isMale: type.BOOLEAN,
         castrationDate: type.DATE, 
         haveChip: type.BOOLEAN, 
-        aspects: type.STRING, 
+        aspects: type.STRING,
+        photo: type.STRING
     },{
         freezeTableName: true
     });
