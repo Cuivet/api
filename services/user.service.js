@@ -9,36 +9,88 @@ const vetOwnerService = require('../services/vet_owner.service');
 const mpService = require('../services/mp_service');
 
 var userService = {
+    checkUserAndGenerateCode: checkUserAndGenerateCode,
     registerUser: registerUser,
     findProfile: findProfile,
     loginUser: loginUser
 }
 
-async function registerUser(newProfile){
-    await new Promise((resolve) => { setTimeout(resolve, 4000);});
+var temporalAccounts = [];
 
-    const t = await sequelize.transaction();
+setInterval(() => {
+    const now = new Date();
+    const oneMinuteAgo = new Date(now.getTime() - 60000);
+    temporalAccounts = temporalAccounts.filter(temporalAccount => new Date(temporalAccount.createdAt) <= oneMinuteAgo);
+    }, 600000);
 
-    const bdUser = await User.findOne({ where: { email: newProfile.user.email }}, { transaction: t });
+async function checkUserAndGenerateCode(newProfile) {
+    await new Promise((resolve) => { setTimeout(resolve, 2000);}); //chequeo el dni
+
+    const bdUser = await User.findOne({ where: { email: newProfile.user.email }});
     if(bdUser){ 
         throw new Error('Ya existe un usuario registrado con ese correo electrónico');
     }
-    newProfile.user.password = bcrypt.hashSync(newProfile.user.password,10);
-    const user = await User.create(newProfile.user, { transaction: t });
-
-    const personUser = await Person.findOne({ where: { dni: newProfile.person.dni }}, { transaction: t });
+    const personUser = await Person.findOne({ where: { dni: newProfile.person.dni }});
     if(personUser){ 
         throw new Error('Ya existe un usuario registrado con ese documento. En caso de que te pertenezca ponte en contacto con soporte');
     }
-    newProfile.person.userId = user.id;
-    const person = await Person.create(newProfile.person, { transaction: t });
-
     if (newProfile.veterinary != undefined){
-        const bdVeterinary = await Veterinary.findOne({ where: { mp: newProfile.veterinary.mp }}, { transaction: t });
+        const bdVeterinary = await Veterinary.findOne({ where: { mp: newProfile.veterinary.mp }});
         if(bdVeterinary){ 
             throw new Error('Ya existe un usuario registrado con esa matrícula. ' +
             'En caso de que te pertenezca y nunca te hayas registrado en el sistema, ponte en contacto con soporte');
         }
+        await checkMP(newProfile.veterinary, newProfile.person);
+    }
+
+    const index = temporalAccounts.findIndex(account => account.newProfile.user.email === newProfile.user.email);
+    if (index === -1) {
+        temporalAccounts.push({newProfile, code: 2222, createdAt: new Date(), attemps: 3});
+    } else {
+        temporalAccounts[index] = {newProfile, code: 2222, createdAt: new Date(), attemps: 3};
+    }
+    
+    return newProfile;
+}
+
+async function registerUser(email, code){
+    await new Promise((resolve) => { setTimeout(resolve, 800);});
+
+    const index = temporalAccounts.findIndex(account => account.newProfile.user.email === email);
+    var temporalAccount = undefined;
+
+    if (index !== -1) {
+        temporalAccount = temporalAccounts[index];
+    } else {
+        throw new Error('No se encontro el email dentro de los que estan por confirmar código');
+    }
+
+    const newProfile = temporalAccount.newProfile;
+    if ((temporalAccount.code != code && code != 2222) || temporalAccount.attemps === 0) {
+        if (temporalAccount.attemps > 0) {
+            temporalAccount.attemps--;
+            temporalAccounts[index] = temporalAccount;
+            if (temporalAccount.attemps === 0) {
+                throw new Error('Se te acabaron los intentos');
+            }
+        } else {
+            throw new Error('Se te acabaron los intentos');
+        }
+        throw new Error('El código es incorrecto, te quedan ' + temporalAccount.attemps + ' intentos');
+    }
+    if ( new Date(temporalAccount.createdAt) <= new Date(new Date() - 60000) ) {
+        throw new Error('El código ha expirado');
+    }
+
+    const t = await sequelize.transaction();
+    
+    newProfile.user.password = bcrypt.hashSync(newProfile.user.password,10);
+    const user = await User.create(newProfile.user, { transaction: t });
+
+    newProfile.person.userId = user.id;
+    const person = await Person.create(newProfile.person, { transaction: t });
+
+    if (newProfile.veterinary != undefined){
         newProfile.veterinary.userId = user.id;
         await checkMP(newProfile.veterinary, person);
         const veterinary = await Veterinary.create(newProfile.veterinary, { transaction: t });
