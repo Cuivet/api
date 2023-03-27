@@ -7,6 +7,7 @@ const veterinaryService = require('../services/veterinary.service');
 const tutorService = require('../services/tutor.service');
 const vetOwnerService = require('../services/vet_owner.service');
 const mpService = require('../services/mp_service');
+const mailService = require('./mail.service');
 
 var userService = {
     checkUserAndGenerateCode: checkUserAndGenerateCode,
@@ -43,13 +44,23 @@ async function checkUserAndGenerateCode(newProfile) {
         await checkMP(newProfile.veterinary, newProfile.person);
     }
 
+    const rndCode = Math.floor(Math.random() * 10000);
     const index = temporalAccounts.findIndex(account => account.newProfile.user.email === newProfile.user.email);
     if (index === -1) {
-        temporalAccounts.push({newProfile, code: 2222, createdAt: new Date(), attemps: 3});
+        temporalAccounts.push({newProfile, code: rndCode, createdAt: new Date(), attemps: 3});
     } else {
-        temporalAccounts[index] = {newProfile, code: 2222, createdAt: new Date(), attemps: 3};
+        temporalAccounts[index] = {newProfile, code: rndCode, createdAt: new Date(), attemps: 3};
     }
-    
+
+    const mailOptions = {
+            from: 'cuivetmailservice@gmail.com',
+            to: newProfile.user.email,
+            subject: 'Código de cuenta CUIVET',
+            text: 'Tu código de verificación CUIVET es ' + rndCode
+    }
+
+    let transporter = mailService.getTransporter();
+    await transporter.sendMail(mailOptions);
     return newProfile;
 }
 
