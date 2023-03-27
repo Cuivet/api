@@ -14,7 +14,16 @@ router.post('/register',[   check('user.password','El password es obligatorio').
         return res.status(422).json({ errores: errors.array()})
     }
     try {
-        res.json(await userService.registerUser(req.body));
+        res.json(await userService.checkUserAndGenerateCode(req.body));
+    } catch (e){
+        res.status(500).send(e.message);
+    }
+});
+
+router.post('/confirmRegister', async (req, res) => {
+    console.log('Request to confirm register' + req.method + ' on: ' + req.baseUrl + req.url);
+    try {
+        res.json(await userService.registerUser(req.body.email, req.body.code));
     } catch (e){
         res.status(500).send(e.message);
     }
