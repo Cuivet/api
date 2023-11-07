@@ -34,9 +34,11 @@ const HairColorModel = require('./db/hair_color.model');
 const HairLengthModel = require('./db/hair_length.model');
 const PetSizeModel = require('./db/pet_size.model');
 const VeterinaryAssociationModel = require('./db/veteriary_association.model');
+const env = process.env.NODE_ENV || 'development'; //se configura la variable ENV desde el CLI de deploy (CREO!)
+const config = require(__dirname + '/../config/config.json')[env];
 
-const sequelize = new Sequelize('cuivet-api','root','rootpass',{
-    host: 'localhost',
+const sequelize = new Sequelize(config.database, config.username, config.password,{
+    host: config.host,
     dialect: 'mysql',
     query: {raw: true}
 });
