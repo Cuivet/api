@@ -20,9 +20,7 @@
     "moment": "^2.29.3",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.9.1",
-    "sequelize": "^6.20.1"
-  },
-  "devDependencies": {
+    "sequelize": "^6.20.1",
     "sequelize-cli": "^6.4.1"
   }
 }
