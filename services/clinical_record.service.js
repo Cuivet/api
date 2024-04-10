@@ -3,6 +3,7 @@ const veterinaryService = require('./veterinary.service');
 const tutorService = require('./tutor.service');
 const petService = require('./pet.service');
 const vetService = require('./vet.service');
+const qualificationService = require('./qualification.service');
 
 var clinicalRecordService = {
     create: create,
@@ -13,6 +14,7 @@ var clinicalRecordService = {
 
 async function create(clinicalRecord) {
     id = (await ClinicalRecord.create({petId: clinicalRecord.petId, vetId: clinicalRecord.vetId, veterinaryId: clinicalRecord.veterinaryId})).id;
+    await qualificationService.create({clinicalRecordId:id}); //Inserta el registro  
     return findOne(id);
 }
 

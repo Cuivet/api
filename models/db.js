@@ -34,6 +34,7 @@ const HairColorModel = require('./db/hair_color.model');
 const HairLengthModel = require('./db/hair_length.model');
 const PetSizeModel = require('./db/pet_size.model');
 const VeterinaryAssociationModel = require('./db/veteriary_association.model');
+const QualificationModel = require('./db/qualification.model');
 
 const sequelize = new Sequelize('cuivet-api','root','rootpass',{
     host: 'localhost',
@@ -74,6 +75,7 @@ const HairColor = HairColorModel(sequelize, Sequelize);
 const HairLength = HairLengthModel(sequelize, Sequelize);
 const PetSize = PetSizeModel(sequelize, Sequelize);
 const VeterinaryAssociation = VeterinaryAssociationModel(sequelize, Sequelize);
+const Qualification = QualificationModel(sequelize, Sequelize);
 
 // Relaciones entre entidades
 Person.belongsTo(User);
@@ -115,6 +117,8 @@ DiagnosisItemTreatment.belongsTo(Drug);
 TreatmentOption.belongsTo(TreatmentType);
 VeterinaryAssociation.belongsTo(Vet);
 VeterinaryAssociation.belongsTo(Veterinary);
+Qualification.belongsTo(ClinicalRecord);
+
 
 sequelize.sync({ force: false })
     .then(() => {
@@ -166,5 +170,6 @@ module.exports = {
     HairLength,
     PetSize,
     TreatmentOption,
+    Qualification,
     VeterinaryAssociation
 }

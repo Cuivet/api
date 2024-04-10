@@ -25,6 +25,7 @@ const apiHairColorRouter = require('./api/hair_color.route');
 const apiHairLengthRouter = require('./api/hair_length.route');
 const apiPetSizeRouter = require('./api/pet_size.route');
 const apiVeterinaryAssociationRouter = require('./api/veterinary_association.route');
+const apiQualificationRouter = require('./api/qualification.route');
 
 router.use('/user', apiUserRouter);
 router.use('/person', middleware.checkToken, apiPersonRouter);
@@ -47,5 +48,6 @@ router.use('/hair-color', middleware.checkToken, apiHairColorRouter);
 router.use('/hair-length', middleware.checkToken, apiHairLengthRouter);
 router.use('/pet-size', middleware.checkToken, apiPetSizeRouter);
 router.use('/veterinary-association', middleware.checkToken, apiVeterinaryAssociationRouter);
+router.use('/qualification', middleware.checkToken, apiQualificationRouter);
 
 module.exports = router;
