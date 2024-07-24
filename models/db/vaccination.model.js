@@ -4,7 +4,8 @@ module.exports = (sequelize, type) => {
         placementDate: type.DATE,
         nextDate: type.DATE,
         weight: type.DOUBLE,
-        observation: type.STRING
+        observation: type.STRING,
+        signed: type.BOOLEAN
     }, {
         freezeTableName: true
     });

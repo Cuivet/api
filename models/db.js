@@ -123,6 +123,8 @@ VeterinaryAssociation.belongsTo(Vet);
 VeterinaryAssociation.belongsTo(Veterinary);
 Vaccination.belongsTo(Drug);
 Vaccination.belongsTo(Pet);
+Vaccination.belongsTo(Vet);
+Vaccination.belongsTo(Veterinary);
 Drug.belongsTo(DrugType);
 
 sequelize.sync({ force: false })

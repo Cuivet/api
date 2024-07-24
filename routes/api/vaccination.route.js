@@ -13,6 +13,12 @@ router.get('/allByPetId/:petId', async (req,res) => {
     res.json(vacs);
 });
 
+router.get('/allByVeterinaryId/:veterinaryId', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const vacs = await vaccinationService.findAllByVeterinaryId(req.params.veterinaryId);
+    res.json(vacs);
+});
+
 
 router.get('/:id', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);

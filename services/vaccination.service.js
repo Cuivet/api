@@ -8,6 +8,7 @@ var vaccinationService = {
   findAll: findAll,
   remove: remove,
   findAllByPetId: findAllByPetId,
+  findAllByVeterinaryId: findAllByVeterinaryId
 };
 
 async function create(reqVac) {
@@ -18,7 +19,10 @@ async function create(reqVac) {
       weight: reqVac.weight,
       observation: reqVac.observation,
       drugId: reqVac.drugId,
+      signed: reqVac.signed,
       petId: reqVac.petId,
+      vetId: reqVac.vetId,
+      veterinaryId: reqVac.veterinaryId,
     })
   ).id;
   return findOne(id);
@@ -61,4 +65,16 @@ async function findAllByPetId(id) {
   return vaccinations;
 }
 
+async function findAllByVeterinaryId(id) {
+  vaccinations = [];
+  vaccinationIds = (
+    await Vaccination.findAll({ where: { veterinaryId: id } })).map(
+      (vac) => vac.id
+    );
+  for (vaccinationId of vaccinationIds) {
+    vaccinations.push(await findOne(vaccinationId));
+  }
+  return vaccinations;
+}
+    
 module.exports = vaccinationService;
