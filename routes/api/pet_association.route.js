@@ -31,6 +31,12 @@ router.get('/allByVeterinaryId/:veterinaryId', async (req,res) => {
     res.json(petAssociations);
 });
 
+router.get('/allByVetId/:vetId', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const petAssociations = await petAssociationService.findAllDataByVetId(req.params.vetId);
+    res.json(petAssociations);
+});
+
 router.post('/registerTemporalAssociation', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const newTemporalPetAssociation = await petAssociationService.saveTemporalAssociation(req.body);

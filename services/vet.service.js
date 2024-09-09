@@ -134,4 +134,14 @@ async function findAllVetDataByIds(ids) {
     return vetDataList;
 }
 
+//elimina al regente de la clinica
+async function removeAssociation(vetId){
+    await Vet.destroy({
+        where: { id: id }
+    });
+    return {message: 'Vet con id ' + id + ' borrado'};
+}
+
+
+
 module.exports = vetService;

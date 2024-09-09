@@ -13,6 +13,7 @@ var petAssociationService = {
 	findAllByPetId: findAllByPetId,
 	findAllDataByTutorId: findAllDataByTutorId,
 	findAllDataByVeterinaryId: findAllDataByVeterinaryId,
+	findAllDataByVetId: findAllDataByVetId,
 	saveTemporalAssociation: saveTemporalAssociation,
 	findTemporalAssociationByCode: findTemporalAssociationByCode,
 };
@@ -51,15 +52,19 @@ async function findAllByPetId(petId) {
 }
 
 async function findAllDataByTutorId(tutorId) {
-	return findAllPetAssociationData(null, tutorId);
+	return findAllPetAssociationData(null, tutorId, null);
 }
 
 async function findAllDataByVeterinaryId(veterinaryId) {
-	return findAllPetAssociationData(veterinaryId, null);
+	return findAllPetAssociationData(veterinaryId, null, null);
 }
 
-async function findAllPetAssociationData(veterinaryId, tutorId) {
-	let petAssociations = [];
+async function findAllDataByVetId(vetId) {
+	return findAllPetAssociationData(null, null, vetId);
+}
+
+async function findAllPetAssociationData(veterinaryId, tutorId, vetId) {
+	let petAssociations = 	[];
 	let pets = [];
 
 	if (veterinaryId) {
@@ -77,6 +82,15 @@ async function findAllPetAssociationData(veterinaryId, tutorId) {
 		petAssociations = await PetAssociation.findAll({
 			where: { petId: petByTutorIds },
 		});
+	}
+	if (vetId) {
+		petAssociations = await PetAssociation.findAll({
+			where: { vetId: vetId },
+		});
+		const petIds = petAssociations.map(
+			(petAssociation) => petAssociation.petId
+		);
+		pets = await petService.findByFilter({ where: { id: petIds } });
 	}
 
 	tutorDataList = await tutorService.findAllTutorDataByIds(
@@ -117,7 +131,7 @@ async function saveTemporalAssociation(reqPetAssociation) {
 	const temporalPetAssociation = {
 		tutorDni: reqPetAssociation.tutorDni,
 		veterinaryId: reqPetAssociation.veterinaryId,
-		vetId: reqPetAssociation.vetId,
+		vetId: reqPetAssociation?.vetId,
 		code: Math.floor(100000 + Math.random() * 900000),
 		time: moment(),
 	};
@@ -145,7 +159,15 @@ async function returnCompleteTemporalAssociation(temporalPetAssociation) {
 	const tutorPerson = await personService.findOneByDni(
 		temporalPetAssociation.tutorDni
 	);
-	const vetData = await vetService.findOne(temporalPetAssociation.vetId);
+	let vetData = {}; 
+	if(!temporalPetAssociation.vetId){
+		vetData =  {
+			id: null,
+			name: "Atención Particular",
+		};
+	} else {
+		vetData = await vetService.findOne(temporalPetAssociation?.vetId);
+	}
 	const tutor = await tutorService.findByUserId(tutorPerson.userId);
 	return {
 		veterinaryData: { veterinary: veterinary, person: veterinaryPerson },
