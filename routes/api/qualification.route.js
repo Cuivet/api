@@ -24,6 +24,7 @@ router.get('/:id', async (req,res) => {
     const qualification = await qualificationService.findOneById(req.params.id);
     res.json(qualification);
 });
+
 router.get('/allByTutorId/:tutorId', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const qualifications = await qualificationService.findAllByTutorId(req.params.tutorId);

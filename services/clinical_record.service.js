@@ -9,7 +9,9 @@ var clinicalRecordService = {
     create: create,
     save: save,
     findOne: findOne,
-    findAllByVeterinary: findAllByVeterinary
+    findAllByVeterinary: findAllByVeterinary,
+    findAllByPet: findAllByPet, 
+    findAllByPetIds:findAllByPetIds
 }
 
 async function create(clinicalRecord) {
@@ -91,7 +93,7 @@ async function findOne(id){
     clinicalRecordDTO.id = clinicalRecord.id;
     clinicalRecordDTO.createdAt = clinicalRecord.createdAt;
     clinicalRecordDTO.pet = await petService.findOne(clinicalRecord.petId);
-    clinicalRecordDTO.vet = await vetService.findOne(clinicalRecord.vetId);
+    clinicalRecordDTO.vet = await vetService.findOfindAllByPetIdsne(clinicalRecord.vetId);
     clinicalRecordDTO.veterinaryData = await veterinaryService.findVeterinaryDataById(clinicalRecord.veterinaryId);
     clinicalRecordDTO.tutorData = await tutorService.findTutorDataById(clinicalRecordDTO.pet.tutorId);
     clinicalRecordDTO.visits = await Visit.findAll({where: { clinicalRecordId: clinicalRecordDTO.id }});
@@ -126,4 +128,26 @@ async function findAllByVeterinary(veterinaryId){
     return clinicalRecords;
 }
 
+async function findAllByPet(petId){//tengo una lista de pets, entonces genero una lista de clinical_record que coincidan con esa mascota
+    clinicalRecords = []
+    clinicalRecordIds = (await ClinicalRecord.findAll({where: {petId: petId}})).map(clinicalRecord => clinicalRecord.id);
+    for (clinicalRecordId of clinicalRecordIds) {
+        clinicalRecords.push(await findOne(clinicalRecordId));
+    }
+    return clinicalRecords;
+}
+
+async function findAllByPetIds(petIds){//tengo una lista de pets, entonces genero una lista de clinical_record que coincidan con esa mascota
+    clinicalRecords = []
+    clinicalRecordIds = (await ClinicalRecord.findAll({where: {
+            clinicalRecordId: {
+                [Sequelize.Op.in]: clinicalRecordIds
+            }
+        }}
+        )).map(clinicalRecord => clinicalRecord.id);
+    for (clinicalRecordId of clinicalRecordIds) {
+        clinicalRecords.push(await findOne(clinicalRecordId));
+    }
+    return clinicalRecords;
+}
 module.exports = clinicalRecordService;
