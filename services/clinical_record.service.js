@@ -12,7 +12,7 @@ var clinicalRecordService = {
 }
 
 async function create(clinicalRecord) {
-    id = (await ClinicalRecord.create({petId: clinicalRecord.petId, vetId: clinicalRecord.vetId, veterinaryId: clinicalRecord.veterinaryId})).id;
+    id = (await ClinicalRecord.create({petId: clinicalRecord.petId, vetId: clinicalRecord.vetId, veterinaryId: clinicalRecord.veterinaryId, reasonConsultation: clinicalRecord.reasonConsultation})).id;
     return findOne(id);
 }
 
@@ -21,9 +21,15 @@ async function save(clinicalRecordDTO){
         newClinicalRecord = {
             petId: clinicalRecordDTO.pet.id,
             vetId: clinicalRecordDTO.vet.id,
-            veterinaryId: clinicalRecordDTO.veterinaryData.veterinary.id
+            veterinaryId: clinicalRecordDTO.veterinaryData.veterinary.id,
+            reasonConsultation: clinicalRecordDTO.reasonConsultation 
         }
         clinicalRecordDTO.id = (await ClinicalRecord.create(newClinicalRecord)).id;
+    } else {
+        await ClinicalRecord.update(
+            { reasonConsultation: clinicalRecordDTO.reasonConsultation },
+            { where: { id: clinicalRecordDTO.id } }
+        );
     }
 
     newVisitIndex = clinicalRecordDTO.visits.findIndex((visit => visit.id == null));
@@ -56,10 +62,13 @@ async function save(clinicalRecordDTO){
             item.presumptiveDiagnosisId = clinicalRecordDTO.presumptiveDiagnosis.id;
             item.id = (await PresumptiveDiagnosisItem.create(item)).id;
         }
-        for (study of clinicalRecordDTO.presumptiveDiagnosis.complementaryStudies) {
-            study.presumptiveDiagnosisId = clinicalRecordDTO.presumptiveDiagnosis.id;
-            study.id = (await ComplementaryStudy.create(study)).id;
+        if(clinicalRecordDTO.presumptiveDiagnosis.complementaryStudies && !clinicalRecordDTO.presumptiveDiagnosis.complementaryStudies.id){
+            for (study of clinicalRecordDTO.presumptiveDiagnosis.complementaryStudies) {
+                study.presumptiveDiagnosisId = clinicalRecordDTO.presumptiveDiagnosis.id;
+                study.id = (await ComplementaryStudy.create(study)).id;
+            }
         }
+        
     }
 
     if(clinicalRecordDTO.diagnosis && !clinicalRecordDTO.diagnosis.id){
@@ -87,6 +96,7 @@ async function findOne(id){
     let clinicalRecordDTO = {};
     clinicalRecord = await ClinicalRecord.findOne({ where: { id: id }});
     clinicalRecordDTO.id = clinicalRecord.id;
+    clinicalRecordDTO.reasonConsultation = clinicalRecord.reasonConsultation;
     clinicalRecordDTO.createdAt = clinicalRecord.createdAt;
     clinicalRecordDTO.pet = await petService.findOne(clinicalRecord.petId);
     clinicalRecordDTO.vet = await vetService.findOne(clinicalRecord.vetId);
