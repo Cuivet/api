@@ -19,7 +19,7 @@ router.get('/:id', async (req,res) => {
     res.json(vet);
 });
 
-router.post('/', async (req,res) => {
+router.post('/register', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const newVet = await vetService.save(req.body);
     res.json(newVet);

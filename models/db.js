@@ -34,6 +34,8 @@ const HairColorModel = require('./db/hair_color.model');
 const HairLengthModel = require('./db/hair_length.model');
 const PetSizeModel = require('./db/pet_size.model');
 const VeterinaryAssociationModel = require('./db/veteriary_association.model');
+const VaccinationModel = require('./db/vaccination.model');
+const DrugTypeModel = require('./db/drug_type.model');
 const env = process.env.NODE_ENV || 'development'; //se configura la variable ENV desde el CLI de deploy (CREO!)
 const config = require(__dirname + '/../config/config.json')[env];
 
@@ -76,6 +78,8 @@ const HairColor = HairColorModel(sequelize, Sequelize);
 const HairLength = HairLengthModel(sequelize, Sequelize);
 const PetSize = PetSizeModel(sequelize, Sequelize);
 const VeterinaryAssociation = VeterinaryAssociationModel(sequelize, Sequelize);
+const Vaccination = VaccinationModel(sequelize, Sequelize);
+const DrugType = DrugTypeModel(sequelize, Sequelize);
 
 // Relaciones entre entidades
 Person.belongsTo(User);
@@ -117,6 +121,11 @@ DiagnosisItemTreatment.belongsTo(Drug);
 TreatmentOption.belongsTo(TreatmentType);
 VeterinaryAssociation.belongsTo(Vet);
 VeterinaryAssociation.belongsTo(Veterinary);
+Vaccination.belongsTo(Drug);
+Vaccination.belongsTo(Pet);
+Vaccination.belongsTo(Vet);
+Vaccination.belongsTo(Veterinary);
+Drug.belongsTo(DrugType);
 
 sequelize.sync({ force: false })
     .then(() => {
@@ -168,5 +177,7 @@ module.exports = {
     HairLength,
     PetSize,
     TreatmentOption,
-    VeterinaryAssociation
+    VeterinaryAssociation,
+    Vaccination,
+    DrugType
 }
