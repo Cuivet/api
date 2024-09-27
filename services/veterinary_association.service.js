@@ -11,6 +11,7 @@ var veterinaryAssociationService = {
     saveTemporalAssociation: saveTemporalAssociation,
     findTemporalAssociationByCode: findTemporalAssociationByCode,
     findAllDataByRegentOrVeterinary: findAllDataByRegentOrVeterinary,
+    findAllDataByVeterinaryId: findAllDataByVeterinaryId,
     findAllVeterinariesByRegentId: findAllVeterinariesByRegentId
 }
 
