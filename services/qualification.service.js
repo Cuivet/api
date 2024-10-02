@@ -1,23 +1,38 @@
 
 
 const { Qualification } = require('../models/db');
-const clinicalRecordService = require('./clinical_record.service');
 const petService = require('./pet.service');
+const Sequelize = require('sequelize');
 
 
 var qualificationService = {
-    create: create,
-    //save: save,
+    save: save,
     findOneById: findOneById,
     findOne: findOne,
     findAllByTutorId:findAllByTutorId,
-    findAllByClinicalRecordIds:findAllByClinicalRecordIds//,
-   // findAllByTutorId: findAllByTutorId
+    findAllByClinicalRecordIds:findAllByClinicalRecordIds
 }
 
-async function create(qualification) {
-    const id = (await Qualification.create({clinicalRecordId: qualification.clinicalRecordId})).id;
-    return findOne(id);
+async function save(qualification){
+    
+    if (qualification.key) {
+        // Crear un objeto con los datos actualizados
+        const updatedQualification = {
+            qualification: qualification.qualification,
+            observation_qa: qualification.observation,
+        };
+
+        try {
+            await Qualification.update(updatedQualification, { where: { id: qualification.key }});
+            
+
+            console.log(`Calificación con ID ${qualification.key} actualizada correctamente.`);
+        } catch (error) {
+            console.error('Error al actualizar la calificación:', error);
+        }
+    } else {
+        console.error('No se puede actualizar una calificación sin ID.');
+    }
 }
 
 async function findOneById(id){
@@ -43,14 +58,43 @@ async function findAllByClinicalRecordIds(clinicalRecordIds) {
     });
     return qualifications;
 }
-async function findAllByTutorId(tutorId){//tengo una lista de pets, entonces genero una lista de clinical_record que coincidan con esa mascota
+
+async function findAllByTutorId(tutorId) {
+
+    const clinicalRecordService = require('./clinical_record.service');
+    
     const petIds = (await petService.findByTutorId(tutorId)).map(pet => pet.id);
 
-    const clinicalRecordIds = (await clinicalRecordService.findAllByPetIds(petIds)).map(cr => cr.id);
+    clinicalRecordResponse = [];
+    for (let petId of petIds) {
+        const recordsForPet = await clinicalRecordService.findAllByPet(petId);
+
+        if (clinicalRecordResponse.lenght > 0) {
+            clinicalRecordResponse.push(...recordsForPet); // Añadir los elementos del array uno por uno
+        } 
+        // Si es un solo objeto, lo añadimos directamente.
+        else if (recordsForPet) {
+            clinicalRecordResponse.push(recordsForPet); // Añadir el objeto al array
+        }
+    }
     
-    return findAllByClinicalRecordIds(clinicalRecordIds);
     
+    //const clinicalRecords = await clinicalRecordService.findAllCRByPetIds(petIds);
+    const qualificationbyTutor = await findAllByClinicalRecordIds(clinicalRecords.map(cr => cr.id));
+    resultadoQualifications = [];
+    clinicalRecords.map(clinicalRecord => {
+        qualification= qualificationbyTutor.find(q => q.clinicalRecordId === clinicalRecord.id) // Encuentra la calificación correspondiente
+        objeto={
+            qualification:qualification,
+            clinicalRecord:clinicalRecord
+        }
+        
+        resultadoQualifications.push(objeto)
+    });
+    // Devuelve el resultado
+    return resultadoQualifications;
 }
+
 
 
 module.exports = qualificationService;

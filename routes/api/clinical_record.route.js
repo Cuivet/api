@@ -40,9 +40,9 @@ router.get('/allByPetId/:id', async (req,res) => {
     res.json(clinicalRecords);
 });
 
-router.get('/allByPetIds/:ids', async (req,res) => {
+router.get('/allCRByPetIds/:ids', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const clinicalRecords = await clinicalRecordService.findAllByPetIds(req.params.id);
+    const clinicalRecords = await clinicalRecordService.findAllCRByPetIds(req.params.id);
     res.json(clinicalRecords);
 });
 

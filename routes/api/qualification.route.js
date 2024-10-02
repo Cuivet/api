@@ -7,6 +7,12 @@ router.post('/register', async (req,res) => {
     res.json(newQualification);
 });
 
+router.post('/save', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const qualification = await qualificationService.save(req.body);
+    res.json(qualification);
+});
+
 // router.delete('/:id', async (req,res) => {
 //     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
 //     const response = await qualificationService.remove(req.params.id);
@@ -30,5 +36,7 @@ router.get('/allByTutorId/:tutorId', async (req,res) => {
     const qualifications = await qualificationService.findAllByTutorId(req.params.tutorId);
     res.json(qualifications);
 });
+
+
 
 module.exports = router;
