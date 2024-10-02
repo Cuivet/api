@@ -35,9 +35,13 @@ const HairLengthModel = require('./db/hair_length.model');
 const PetSizeModel = require('./db/pet_size.model');
 const VeterinaryAssociationModel = require('./db/veteriary_association.model');
 const QualificationModel = require('./db/qualification.model');
+const VaccinationModel = require('./db/vaccination.model');
+const DrugTypeModel = require('./db/drug_type.model');
+const env = process.env.NODE_ENV || 'development'; //se configura la variable ENV desde el CLI de deploy (CREO!)
+const config = require(__dirname + '/../config/config.json')[env];
 
-const sequelize = new Sequelize('cuivet-api','root','rootpass',{
-    host: 'localhost',
+const sequelize = new Sequelize(config.database, config.username, config.password,{
+    host: config.host,
     dialect: 'mysql',
     query: {raw: true}
 });
@@ -76,6 +80,8 @@ const HairLength = HairLengthModel(sequelize, Sequelize);
 const PetSize = PetSizeModel(sequelize, Sequelize);
 const VeterinaryAssociation = VeterinaryAssociationModel(sequelize, Sequelize);
 const Qualification = QualificationModel(sequelize, Sequelize);
+const Vaccination = VaccinationModel(sequelize, Sequelize);
+const DrugType = DrugTypeModel(sequelize, Sequelize);
 
 // Relaciones entre entidades
 Person.belongsTo(User);
@@ -118,7 +124,11 @@ TreatmentOption.belongsTo(TreatmentType);
 VeterinaryAssociation.belongsTo(Vet);
 VeterinaryAssociation.belongsTo(Veterinary);
 Qualification.belongsTo(ClinicalRecord);
-
+Vaccination.belongsTo(Drug);
+Vaccination.belongsTo(Pet);
+Vaccination.belongsTo(Vet);
+Vaccination.belongsTo(Veterinary);
+Drug.belongsTo(DrugType);
 
 sequelize.sync({ force: false })
     .then(() => {
@@ -171,5 +181,7 @@ module.exports = {
     PetSize,
     TreatmentOption,
     Qualification,
-    VeterinaryAssociation
+    VeterinaryAssociation,
+    Vaccination,
+    DrugType
 }

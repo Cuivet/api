@@ -1,9 +1,8 @@
 module.exports = (sequelize, type) => {
-    return sequelize.define('diagnosis_item', {
+    return sequelize.define('drug_type', {
         id: {type: type.INTEGER, primaryKey: true, autoIncrement: true},
-        observation: type.STRING,
-        diagnosisResult: type.STRING
-    },{
+        name: type.STRING
+    }, {
         freezeTableName: true
     });
 }

@@ -26,6 +26,8 @@ const apiHairLengthRouter = require('./api/hair_length.route');
 const apiPetSizeRouter = require('./api/pet_size.route');
 const apiVeterinaryAssociationRouter = require('./api/veterinary_association.route');
 const apiQualificationRouter = require('./api/qualification.route');
+const apiVaccinationRouter = require('./api/vaccination.route');
+const apiDrugTypeRouter = require('./api/drug_type.route');
 
 router.use('/user', apiUserRouter);
 router.use('/person', middleware.checkToken, apiPersonRouter);
@@ -49,5 +51,7 @@ router.use('/hair-length', middleware.checkToken, apiHairLengthRouter);
 router.use('/pet-size', middleware.checkToken, apiPetSizeRouter);
 router.use('/veterinary-association', middleware.checkToken, apiVeterinaryAssociationRouter);
 router.use('/qualification', middleware.checkToken, apiQualificationRouter);
+router.use('/vaccination', middleware.checkToken, apiVaccinationRouter);
+router.use('/drug-type', middleware.checkToken, apiDrugTypeRouter);
 
 module.exports = router;

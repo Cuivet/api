@@ -11,7 +11,9 @@ var veterinaryAssociationService = {
     saveTemporalAssociation: saveTemporalAssociation,
     findTemporalAssociationByCode: findTemporalAssociationByCode,
     findAllDataByRegentOrVeterinary: findAllDataByRegentOrVeterinary,
-    findAllVeterinariesByRegentId: findAllVeterinariesByRegentId
+    findAllDataByVeterinaryId: findAllDataByVeterinaryId,
+    findAllVeterinariesByRegentId: findAllVeterinariesByRegentId,
+    findByFilter: findByFilter
 }
 
 var temporalVeterinaryAssociations = [];
@@ -118,11 +120,17 @@ async function findAllVeterinariesByRegentId(regentId) {
         veterinaryDataListByRegent.push(
             {   
                 vetData: vetDataList.find( vdl => vdl.vet.id === val.vetId),
-                coveterinaryData: veterinaryDataList.find( vydl => vydl.veterinary.id === val.veterinaryId)//la data de los covets de mis regentVets
+                coveterinaryData: veterinaryDataList.find( vydl => vydl.veterinary.id === val.veterinaryId)
             }
         )
     })
     return veterinaryDataListByRegent;
+}
+
+async function findByFilter(filter){
+    var vetAssociationList = await VeterinaryAssociation.findAll(filter);
+    vetAssociationList = vetAssociationList ? vetAssociationList : null;
+    return vetAssociationList;
 }
 
 module.exports = veterinaryAssociationService;

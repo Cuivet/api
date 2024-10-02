@@ -8,6 +8,7 @@ const tutorService = require('../services/tutor.service');
 const vetOwnerService = require('../services/vet_owner.service');
 const mpService = require('../services/mp_service');
 const mailService = require('./mail.service');
+const qrService = require('./qr_service');
 
 var userService = {
     checkUserAndGenerateCode: checkUserAndGenerateCode,
@@ -25,8 +26,6 @@ setInterval(() => {
     }, 600000);
 
 async function checkUserAndGenerateCode(newProfile) {
-    await new Promise((resolve) => { setTimeout(resolve, 2000);}); //chequeo el dni
-
     const bdUser = await User.findOne({ where: { email: newProfile.user.email }});
     if(bdUser){ 
         throw new Error('Ya existe un usuario registrado con ese correo electrónico');
@@ -43,6 +42,11 @@ async function checkUserAndGenerateCode(newProfile) {
         }
         await checkMP(newProfile.veterinary, newProfile.person);
     }
+    
+    // Borrar este if cuando quiera que se escanee el documento de todos los perfiles
+    if (newProfile.tutor != undefined) {
+        await qrService.checkIfIsValidDNI(newProfile.photo, newProfile.person.dni);
+    }
 
     const rndCode = Math.floor(Math.random() * 10000);
     const index = temporalAccounts.findIndex(account => account.newProfile.user.email === newProfile.user.email);
@@ -52,15 +56,19 @@ async function checkUserAndGenerateCode(newProfile) {
         temporalAccounts[index] = {newProfile, code: rndCode, createdAt: new Date(), attemps: 3};
     }
 
-    const mailOptions = {
-            from: 'cuivetmailservice@gmail.com',
-            to: newProfile.user.email,
-            subject: 'Código de cuenta CUIVET',
-            text: 'Tu código de verificación CUIVET es ' + rndCode
-    }
+    if (newProfile.user.email[0].includes("@gmail.com")) {
+        // para no exceder la cuota diaria, solo manda a @gmail
+        const mailOptions = {
+                from: 'cuivetmailservice@gmail.com',
+                to: newProfile.user.email,
+                subject: 'Código de cuenta CUIVET',
+                text: 'Tu código de verificación CUIVET es ' + rndCode
+        }
 
-    let transporter = mailService.getTransporter();
-    await transporter.sendMail(mailOptions);
+        let transporter = mailService.getTransporter();
+        await transporter.sendMail(mailOptions);
+    }
+    
     return newProfile;
 }
 
