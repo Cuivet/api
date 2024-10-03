@@ -2,9 +2,8 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const drugTypes = await queryInterface.sequelize.query('SELECT id FROM drug_type');
+    const [drugTypes] = await queryInterface.sequelize.query('SELECT id FROM drug_type');
     const drugTypeIds = drugTypes.map(type => type.id);
-    console.log(drugTypeIds);
 
     let drugs = [
       { id: 1, name: 'Ketorolac Sublingual 100ml', drugTypeId: drugTypeIds[0], createdAt: new Date(), updatedAt: new Date() },
