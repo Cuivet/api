@@ -17,7 +17,9 @@ var clinicalRecordService = {
 
 async function create(clinicalRecord) {
     id = (await ClinicalRecord.create({petId: clinicalRecord.petId, vetId: clinicalRecord.vetId, veterinaryId: clinicalRecord.veterinaryId})).id;
-    await qualificationService.create({clinicalRecordId:id}); //Inserta el registro  
+    if(id){
+        await qualificationService.create({clinicalRecordId: id}); //Inserta el registro  
+    }
     return findOne(id);
 }
 
