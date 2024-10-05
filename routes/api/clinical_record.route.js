@@ -6,6 +6,11 @@ router.get('/allByVeterinaryId/:id', async (req,res) => {
     const clinicalRecords = await clinicalRecordService.findAllByVeterinary(req.params.id);
     res.json(clinicalRecords);
 });
+router.get('/allByTutorId/:id', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const clinicalRecords = await clinicalRecordService.findAllByTutor(req.params.id);
+    res.json(clinicalRecords);
+});
 
 router.get('/:id', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
