@@ -129,17 +129,26 @@ Drug.belongsTo(DrugType);
 
 sequelize.sync({ force: false })
     .then(() => {
-        exec("npx sequelize-cli db:seed:all", (error, stdout, stderr) => {
+        // Ejecutar un seeder específico primero
+        exec("npx sequelize-cli db:seed --seed 20240714224349-drug-types.js", (error, stdout, stderr) => {
             if (error) {
-                console.log(`No se pudieron inicializar las semillas. Esto puede deberse a que la tabla ya estaba poblada. Error: ${error.message}`);
+                console.log(`No se pudo inicializar la semilla de drug-type. Esto puede deberse a que la tabla ya estaba poblada.  Error: ${error.message}`);
                 return;
             }
-            if (stderr) {
-                console.log(`Se inicializaron las semillas con stderr: ${stderr}`);
-                return;
-            }
-            console.log(`Se inicializaron las semillas con stdout: ${stdout}`);
+            console.log(`Se inicializo la semilla de drug-type ${stdout}`);
+            exec("npx sequelize-cli db:seed:all", (error, stdout, stderr) => {
+                if (error) {
+                    console.log(`No se pudieron inicializar las semillas. Esto puede deberse a que las tablas ya estaban pobladas. Error: ${error.message}`);
+                    return;
+                }
+                if (stderr) {
+                    console.log(`Se inicializaron las demás semillas con stderr: ${stderr}`);
+                    return;
+                }
+                console.log(`Se inicializaron las demás semillas con stdout: ${stdout}`);
+            });
         });
+
         console.log('Tablas sincronizadas');
     });
 
