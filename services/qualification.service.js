@@ -1,5 +1,6 @@
 const { Qualification } = require("../models/db");
 const petService = require("./pet.service");
+const petAssociationService = require("./pet_association.service");
 const Sequelize = require("sequelize");
 
 var qualificationService = {
@@ -8,7 +9,8 @@ var qualificationService = {
   findOne: findOne,
   findAllByTutorId: findAllByTutorId,
   findAllByClinicalRecordIds: findAllByClinicalRecordIds,
-  create: create
+  create: create,
+  findAllByVeterinaryId:findAllByVeterinaryId
 };
 
 async function create(reqVac) {
@@ -77,33 +79,88 @@ async function findAllByTutorId(tutorId) {
   for (let petId of petIds) {
     const recordsForPet = await clinicalRecordService.findAllByPet(petId);
 
-    if (clinicalRecordResponse.lenght > 0) {
+    if (clinicalRecordResponse.length > 0) { // Corregido aquí
       clinicalRecordResponse.push(...recordsForPet); // Añadir los elementos del array uno por uno
-    }
-    // Si es un solo objeto, lo añadimos directamente.
+    } 
+  // Si es un solo objeto, lo añadimos directamente.
     else if (recordsForPet) {
-      clinicalRecordResponse.push(recordsForPet); // Añadir el objeto al array
+     clinicalRecordResponse.push(...recordsForPet); // Añadir el objeto al array
     }
   }
 
   //const clinicalRecords = await clinicalRecordService.findAllCRByPetIds(petIds);
   const qualificationbyTutor = await findAllByClinicalRecordIds(
-    clinicalRecords.map((cr) => cr.id)
+    clinicalRecordResponse.map((cr) => cr.id)
   );
-  resultadoQualifications = [];
-  clinicalRecords.map((clinicalRecord) => {
-    qualification = qualificationbyTutor.find(
-      (q) => q.clinicalRecordId === clinicalRecord.id
-    ); // Encuentra la calificación correspondiente
-    objeto = {
+
+  const resultadoQualifications = [];
+  clinicalRecordResponse.forEach((clinicalRecord) => {
+  const qualification = qualificationbyTutor.find(
+    (q) => q.clinicalRecordId === clinicalRecord.id
+  ); // Encuentra la calificación correspondiente
+
+  // Solo agregar si se encontró una calificación
+  if (qualification) {
+    const objeto = {
       qualification: qualification,
       clinicalRecord: clinicalRecord,
     };
 
     resultadoQualifications.push(objeto);
-  });
-  // Devuelve el resultado
-  return resultadoQualifications;
+  }
+});
+
+return resultadoQualifications;
+
+}
+
+
+async function findAllByVeterinaryId(veterinaryId) {
+  const clinicalRecordService = require("./clinical_record.service");
+
+  //const petIds = (await petAssociationService.findAllDataByVeterinaryId(veterinaryId)).map((pet) => pet.id);
+  const response = await petAssociationService.findAllDataByVeterinaryId(veterinaryId);
+  const petIds = Array.isArray(response) 
+  ? response.map((item) => item.pet ? item.pet.id : null).filter(id => id !== null) 
+  : [];
+
+  clinicalRecordResponse = [];
+  for (let petId of petIds) {
+    const recordsForPet = await clinicalRecordService.findAllByPet(petId);
+
+    if (clinicalRecordResponse.length > 0) { // Corregido aquí
+      clinicalRecordResponse.push(...recordsForPet); // Añadir los elementos del array uno por uno
+    } 
+  // Si es un solo objeto, lo añadimos directamente.
+    else if (recordsForPet) {
+     clinicalRecordResponse.push(...recordsForPet); // Añadir el objeto al array
+    }
+  }
+
+
+  //const clinicalRecords = await clinicalRecordService.findAllCRByPetIds(petIds);
+  const qualificationbyVeterinary = await findAllByClinicalRecordIds(
+    clinicalRecords.map((cr) => cr.id)
+  );
+
+  const resultadoQualifications = [];
+  clinicalRecordResponse.forEach((clinicalRecord) => {
+  const qualification = qualificationbyVeterinary.find(
+    (q) => q.clinicalRecordId === clinicalRecord.id
+  ); // Encuentra la calificación correspondiente
+
+  // Solo agregar si se encontró una calificación
+  if (qualification) {
+    const objeto = {
+      qualification: qualification,
+      clinicalRecord: clinicalRecord,
+    };
+
+    resultadoQualifications.push(objeto);
+  }
+});
+
+return resultadoQualifications;
 }
 
 module.exports = qualificationService;

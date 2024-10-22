@@ -36,7 +36,11 @@ router.get('/allByTutorId/:tutorId', async (req,res) => {
     const qualifications = await qualificationService.findAllByTutorId(req.params.tutorId);
     res.json(qualifications);
 });
-
+router.get('/allByVeterinaryId/:veterinaryId', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const qualifications = await qualificationService.findAllByVeterinaryId(req.params.veterinaryId);
+    res.json(qualifications);
+});
 
 
 module.exports = router;

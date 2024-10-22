@@ -16,11 +16,11 @@ var clinicalRecordService = {
 }
 
 async function create(clinicalRecord) {
-    id = (await ClinicalRecord.create({petId: clinicalRecord.petId, vetId: clinicalRecord.vetId, veterinaryId: clinicalRecord.veterinaryId})).id;
-    if(id){
-        await qualificationService.create({clinicalRecordId: id}); //Inserta el registro  
+    newClinicalRecord = (await ClinicalRecord.create({petId: clinicalRecord.petId, vetId: clinicalRecord.vetId, veterinaryId: clinicalRecord.veterinaryId}));
+    if(newClinicalRecord){
+        newQualification = await qualificationService.create({clinicalRecordId: newClinicalRecord.id}); //Inserta el registro  
     }
-    return findOne(id);
+    return findOne(newClinicalRecord.id);
 }
 
 async function save(clinicalRecordDTO){
