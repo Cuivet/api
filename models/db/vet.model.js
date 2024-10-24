@@ -4,7 +4,9 @@ module.exports = (sequelize, type) => {
         name: type.STRING,
         phone: type.STRING,
         address: type.STRING,
-        photo: type.STRING
+        photo: type.STRING,
+        lat: { type: type.FLOAT },
+        lng: { type: type.FLOAT } 
     },{
         freezeTableName: true
     });
