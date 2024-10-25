@@ -38,6 +38,7 @@ const VaccinationModel = require('./db/vaccination.model');
 const DrugTypeModel = require('./db/drug_type.model');
 const env = process.env.NODE_ENV || 'development'; //se configura la variable ENV desde el CLI de deploy (CREO!)
 const config = require(__dirname + '/../config/config.json')[env];
+const VetHoursModel = require('./db/vet_hours.model');
 
 const sequelize = new Sequelize(config.database, config.username, config.password,{
     host: config.host,
@@ -80,6 +81,7 @@ const PetSize = PetSizeModel(sequelize, Sequelize);
 const VeterinaryAssociation = VeterinaryAssociationModel(sequelize, Sequelize);
 const Vaccination = VaccinationModel(sequelize, Sequelize);
 const DrugType = DrugTypeModel(sequelize, Sequelize);
+const VetHours = VetHoursModel(sequelize, Sequelize);
 
 // Relaciones entre entidades
 Person.belongsTo(User);
@@ -126,6 +128,7 @@ Vaccination.belongsTo(Pet);
 Vaccination.belongsTo(Vet);
 Vaccination.belongsTo(Veterinary);
 Drug.belongsTo(DrugType);
+VetHours.belongsTo(Vet);
 
 sequelize.sync({ force: false })
     .then(() => {
@@ -188,5 +191,6 @@ module.exports = {
     TreatmentOption,
     VeterinaryAssociation,
     Vaccination,
-    DrugType
+    DrugType,
+    VetHours
 }
