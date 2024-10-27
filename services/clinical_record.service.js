@@ -1,4 +1,4 @@
-const { ClinicalRecord, Visit, Review, Anamnesis, PhysicalExam, PresumptiveDiagnosis, Diagnosis, Prognosis, AnamnesisItem, ComplementaryStudy, DiagnosisItemTreatment, DiagnosisItem, PresumptiveDiagnosisItem } = require('../models/db');
+const { ClinicalRecord, Visit, Review, Anamnesis, PhysicalExam, PresumptiveDiagnosis, Diagnosis, Prognosis, AnamnesisItem, ComplementaryStudy, DiagnosisItemTreatment, DiagnosisItem, PresumptiveDiagnosisItem, Pet } = require('../models/db');
 const veterinaryService = require('./veterinary.service');
 const tutorService = require('./tutor.service');
 const petService = require('./pet.service');
@@ -12,7 +12,8 @@ var clinicalRecordService = {
     findOne: findOne,
     findAllByVeterinary: findAllByVeterinary,
     findAllByPet: findAllByPet, 
-    findAllCRByPetIds:findAllCRByPetIds
+    findAllCRByPetIds:findAllCRByPetIds,
+    findAllByTutor: findAllByTutor
 }
 
 async function create(clinicalRecord) {
@@ -170,5 +171,16 @@ async function findAllCRByPetIds(petIds) {
     );
 
     return detailedClinicalRecords;
+}
+async function findAllByTutor(tutorId){
+    clinicalRecords = []
+    petIds = (await Pet.findAll({where: {tutorId: tutorId}})).map(pet => pet.id);
+    for (petId of petIds) {
+        clinicalRecordIds = (await ClinicalRecord.findAll({where: {petId: petId}})).map(clinicalRecord => clinicalRecord.id);
+        for (clinicalRecordId of clinicalRecordIds) {
+            clinicalRecords.push(await findOne(clinicalRecordId));
+        }
+    }
+    return clinicalRecords;
 }
 module.exports = clinicalRecordService;
