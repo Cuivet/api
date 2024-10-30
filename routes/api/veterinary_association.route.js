@@ -29,8 +29,12 @@ router.get('/temporalAssociationByCode/:code', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     try{
         res.json(await veterinaryAssociationService.findTemporalAssociationByCode(req.params.code));
-    } catch {
-        res.status(500).send('Asociación no existente');
+    } catch (error) {
+        if (error.message === "Code has expired") {
+            res.status(410).send("El código ha expirado");
+        } else {
+            res.status(500).send("Asociación no existente");
+        }
     }
 });
 
