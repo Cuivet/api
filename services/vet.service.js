@@ -42,7 +42,7 @@ async function save(reqVet) {
     );
 
     for (const day of daysOfWeek) {
-      const hour = reqVet.hours.find((h) => h.dayOfWeek === day) || {
+      const hour = reqVet.hours?.find((h) => h.dayOfWeek === day) || {
         dayOfWeek: day,
         openTime: null,
         closeTime: null,
