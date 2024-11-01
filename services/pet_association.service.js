@@ -133,20 +133,21 @@ async function saveTemporalAssociation(reqPetAssociation) {
 		veterinaryId: reqPetAssociation.veterinaryId,
 		vetId: reqPetAssociation?.vetId,
 		code: Math.floor(100000 + Math.random() * 900000),
-		time: moment(),
+		expiresAt: moment().add(10, "minutes")
 	};
 	temporalPetAssociations.push(temporalPetAssociation);
 	return returnCompleteTemporalAssociation(temporalPetAssociation);
 }
 
 async function findTemporalAssociationByCode(associationCode) {
-	//despues podemos comprobar que el que este mandando el codigo correponda con pet y vet
-	//sino, si mando un associationCode de otra persona puedo generar la asociacion
 	temporalPetAssociation = temporalPetAssociations.find(
 		(temporalPetAssociation) => temporalPetAssociation.code == associationCode
 	);
 	if (temporalPetAssociation === undefined) {
 		throw new Exception();
+	}
+	if (moment().isAfter(temporalPetAssociation.expiresAt)) {
+		throw new Error('Code has expired');
 	}
 	return returnCompleteTemporalAssociation(temporalPetAssociation);
 }

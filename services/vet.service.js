@@ -288,6 +288,7 @@ async function saveTemporalAssociation(reqRegentAssociation) {
     vetId: reqRegentAssociation.vetId,
     code: "R" + Math.floor(100000 + Math.random() * 900000),
     time: moment(),
+    expiresAt: moment().add(10, "minutes")
   };
   temporalRegentAssociations.push(temporalRegentAssociation);
   return returnCompleteTemporalAssociation(temporalRegentAssociation);
@@ -300,7 +301,9 @@ async function findTemporalAssociationByCode(associationCode) {
   );
   if (temporalRegentAssociation === undefined) {
     throw new Exception();
-  }
+  }if (moment().isAfter(temporalVeterinaryAssociation.expiresAt)) {
+		throw new Error('Code has expired');
+	}
   return returnCompleteTemporalAssociation(temporalRegentAssociation);
 }
 
