@@ -5,18 +5,33 @@ module.exports = {
     let races = [
       // Perro
       {id: 1, name: 'Labrador', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
-      {id: 2, name: 'Golden', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
-      {id: 3, name: 'Colly', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
-      {id: 4, name: 'Jack Russell', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
-      {id: 5, name: 'Caniche', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
-      {id: 6, name: 'Sin Raza', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 2, name: 'Golden Retriever', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 3, name: 'Border Collie', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 4, name: 'Jack Russell Terrier', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 5, name: 'Caniche (Poodle)', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 6, name: 'Pastor Alemán', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 7, name: 'Bulldog', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 8, name: 'Beagle', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 9, name: 'Rottweiler', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 10, name: 'Dálmata', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 11, name: 'Shih Tzu', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+      {id: 12, name: 'Sin Raza', createdAt: new Date(), updatedAt: new Date(), specieId: 1},
+
 
       // Gato
       {id: 100, name: 'Abisinio', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
       {id: 101, name: 'Bombay', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
       {id: 102, name: 'Balinés', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
       {id: 103, name: 'Persa', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
-      {id: 104, name: 'Sin Raza', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
+      {id: 104, name: 'Siamés', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
+      {id: 105, name: 'Maine Coon', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
+      {id: 106, name: 'Bengala', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
+      {id: 107, name: 'Siberiano', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
+      {id: 108, name: 'Sphynx', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
+      {id: 109, name: 'British Shorthair', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
+      {id: 110, name: 'Ragdoll', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
+      {id: 111, name: 'Sin Raza', createdAt: new Date(), updatedAt: new Date(), specieId: 2},
+
 
       // Ave
       {id: 200, name: 'Canario', createdAt: new Date(), updatedAt: new Date(), specieId: 3},
