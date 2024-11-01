@@ -1,4 +1,4 @@
-const { Vet, VetHours } = require("../models/db");
+const { Vet, VetHours, VeterinaryAssociation } = require("../models/db");
 const veterinaryService = require("./veterinary.service");
 const personService = require("./person.service");
 const moment = require("moment/moment");
@@ -70,6 +70,12 @@ async function save(reqVet) {
     for (const hour of existingHoursMap.values()) {
       await VetHours.destroy({ where: { id: hour.id } });
     }
+    await VeterinaryAssociation.destroy({
+      where: {
+        vetId: reqVet.id,
+        veterinaryId: reqVet.veterinaryId,
+      },
+    });
   } else {
     vet = await Vet.create(reqVet);
     vet = await findOne(vet.id);
@@ -86,6 +92,12 @@ async function save(reqVet) {
         closeTime: hour.closeTime,
       });
     }
+    await VeterinaryAssociation.destroy({
+      where: {
+        vetId: vet.id,
+        veterinaryId: reqVet.veterinaryId,
+      },
+    });
   }
   return vet;
 }
@@ -288,7 +300,7 @@ async function saveTemporalAssociation(reqRegentAssociation) {
     vetId: reqRegentAssociation.vetId,
     code: "R" + Math.floor(100000 + Math.random() * 900000),
     time: moment(),
-    expiresAt: moment().add(10, "minutes")
+    expiresAt: moment().add(10, "minutes"),
   };
   temporalRegentAssociations.push(temporalRegentAssociation);
   return returnCompleteTemporalAssociation(temporalRegentAssociation);
@@ -301,9 +313,10 @@ async function findTemporalAssociationByCode(associationCode) {
   );
   if (temporalRegentAssociation === undefined) {
     throw new Exception();
-  }if (moment().isAfter(temporalVeterinaryAssociation.expiresAt)) {
-		throw new Error('Code has expired');
-	}
+  }
+  if (moment().isAfter(temporalRegentAssociation.expiresAt)) {
+    throw new Error("Code has expired");
+  }
   return returnCompleteTemporalAssociation(temporalRegentAssociation);
 }
 
