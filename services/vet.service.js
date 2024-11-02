@@ -70,12 +70,14 @@ async function save(reqVet) {
     for (const hour of existingHoursMap.values()) {
       await VetHours.destroy({ where: { id: hour.id } });
     }
-    await VeterinaryAssociation.destroy({
-      where: {
-        vetId: reqVet.id,
-        veterinaryId: reqVet.veterinaryId,
-      },
-    });
+    if (reqVet.veterinaryId) {
+      await VeterinaryAssociation.destroy({
+        where: {
+          vetId: reqVet.id,
+          veterinaryId: reqVet?.veterinaryId,
+        },
+      });
+    }
   } else {
     vet = await Vet.create(reqVet);
     vet = await findOne(vet.id);
@@ -92,12 +94,14 @@ async function save(reqVet) {
         closeTime: hour.closeTime,
       });
     }
-    await VeterinaryAssociation.destroy({
-      where: {
-        vetId: vet.id,
-        veterinaryId: reqVet.veterinaryId,
-      },
-    });
+    if (reqVet.veterinaryId) {
+      await VeterinaryAssociation.destroy({
+        where: {
+          vetId: vet.id,
+          veterinaryId: reqVet.veterinaryId,
+        },
+      });
+    }
   }
   return vet;
 }
