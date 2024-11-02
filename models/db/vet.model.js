@@ -6,7 +6,8 @@ module.exports = (sequelize, type) => {
         address: type.STRING,
         photo: type.STRING,
         lat: { type: type.FLOAT },
-        lng: { type: type.FLOAT } 
+        lng: { type: type.FLOAT },
+        active: {type: type.BOOLEAN, defaultValue: 1}
     },{
         freezeTableName: true
     });

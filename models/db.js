@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 const { exec } = require("child_process");
 
 const UserModel = require('./db/user.model');
@@ -41,11 +41,16 @@ const env = process.env.NODE_ENV || 'development'; //se configura la variable EN
 const config = require(__dirname + '/../config/config.json')[env];
 const VetHoursModel = require('./db/vet_hours.model');
 
-const sequelize = new Sequelize(config.database, config.username, config.password,{
+const sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  {
     host: config.host,
-    dialect: 'mysql',
-    query: {raw: true}
-});
+    dialect: "mysql",
+    query: { raw: true },
+  }
+);
 
 const User = UserModel(sequelize, Sequelize);
 const Person = PersonModel(sequelize, Sequelize);
@@ -66,16 +71,25 @@ const PresumptiveDiagnosis = PresumptiveDiagnosisModel(sequelize, Sequelize);
 const Diagnosis = DiagnosisModel(sequelize, Sequelize);
 const Prognosis = PrognosisModel(sequelize, Sequelize);
 const AnamnesisQuestion = AnamnesisQuestionModel(sequelize, Sequelize);
-const ComplementaryStudyType = ComplementaryStudyTypeModel(sequelize, Sequelize);
+const ComplementaryStudyType = ComplementaryStudyTypeModel(
+  sequelize,
+  Sequelize
+);
 const DiagnosisType = DiagnosisTypeModel(sequelize, Sequelize);
 const TreatmentType = TreatmentTypeModel(sequelize, Sequelize);
 const TreatmentOption = TreatmentOptionModel(sequelize, Sequelize);
 const Drug = DrugModel(sequelize, Sequelize);
 const AnamnesisItem = AnamnesisItemModel(sequelize, Sequelize);
-const PresumptiveDiagnosisItem = PresumptiveDiagnosisItemModel(sequelize, Sequelize);
+const PresumptiveDiagnosisItem = PresumptiveDiagnosisItemModel(
+  sequelize,
+  Sequelize
+);
 const ComplementaryStudy = ComplementaryStudyModel(sequelize, Sequelize);
 const DiagnosisItem = DiagnosisItemModel(sequelize, Sequelize);
-const DiagnosisItemTreatment = DiagnosisItemTreatmentModel(sequelize, Sequelize);
+const DiagnosisItemTreatment = DiagnosisItemTreatmentModel(
+  sequelize,
+  Sequelize
+);
 const HairColor = HairColorModel(sequelize, Sequelize);
 const HairLength = HairLengthModel(sequelize, Sequelize);
 const PetSize = PetSizeModel(sequelize, Sequelize);
@@ -133,30 +147,57 @@ Vaccination.belongsTo(Veterinary);
 Drug.belongsTo(DrugType);
 VetHours.belongsTo(Vet);
 
-sequelize.sync({ force: false })
-    .then(() => {
-        // Ejecutar un seeder específico primero
-        exec("npx sequelize-cli db:seed --seed 20240714224349-drug-types.js", (error, stdout, stderr) => {
+sequelize
+  .sync({ force: false })
+  .then(() => {
+    console.log("Tablas sincronizadas");
+    exec(
+      "npx sequelize-cli db:seed --seed 20241102144331-create-admin-user.js",
+      (error, stdout, stderr) => {
+        if (error) {
+          console.log(
+            `No se pudo inicializar la semilla del admin. Error: ${error.message}`
+          );
+          return;
+        }
+        console.log(`Se inicializo la semilla del admin: ${stdout}`);
+
+        // Luego, ejecutar la semilla de drug-types
+        exec(
+          "npx sequelize-cli db:seed --seed 20240714224349-drug-types.js",
+          (error, stdout, stderr) => {
             if (error) {
-                console.log(`No se pudo inicializar la semilla de drug-type. Esto puede deberse a que la tabla ya estaba poblada.  Error: ${error.message}`);
-                return;
+              console.log(
+                `No se pudo inicializar la semilla de drug-type. Esto puede deberse a que la tabla ya estaba poblada. Error: ${error.message}`
+              );
+              return;
             }
             console.log(`Se inicializo la semilla de drug-type ${stdout}`);
-            exec("npx sequelize-cli db:seed:all", (error, stdout, stderr) => {
-                if (error) {
-                    console.log(`No se pudieron inicializar las semillas. Esto puede deberse a que las tablas ya estaban pobladas. Error: ${error.message}`);
-                    return;
-                }
-                if (stderr) {
-                    console.log(`Se inicializaron las demás semillas con stderr: ${stderr}`);
-                    return;
-                }
-                console.log(`Se inicializaron las demás semillas con stdout: ${stdout}`);
-            });
-        });
 
-        console.log('Tablas sincronizadas');
-    });
+            // Ahora, ejecuta todas las demás semillas
+            exec("npx sequelize-cli db:seed:all", (error, stdout, stderr) => {
+              if (error) {
+                console.log(
+                  `No se pudieron inicializar las semillas. Esto puede deberse a que las tablas ya estaban pobladas. Error: ${error.message}`
+                );
+                return;
+              }
+              if (stderr) {
+                console.log(
+                  `Se inicializaron las demás semillas con stderr: ${stderr}`
+                );
+                return;
+              }
+              console.log(
+                `Se inicializaron las demás semillas con stdout: ${stdout}`
+              );
+            });
+          }
+        );
+      }
+    );
+  })
+  .catch((err) => console.log("Error al sincronizar las tablas:", err));
 
 module.exports = {
     sequelize,

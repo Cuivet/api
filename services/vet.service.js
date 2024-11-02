@@ -18,6 +18,8 @@ var vetService = {
   findTemporalAssociationByCode: findTemporalAssociationByCode,
   findAllByRegentId: findAllByRegentId,
   findAllVetDataByIds: findAllVetDataByIds,
+  deactivateVet: deactivateVet,
+  activateVet: activateVet,
 };
 
 async function save(reqVet) {
@@ -374,4 +376,19 @@ async function removeAssociation(vetId) {
   return { message: "Vet con id " + id + " borrado" };
 }
 
+async function deactivateVet(id) {
+  try {
+    await Vet.update({ active: 0 }, { where: { id } });
+  } catch (error) {
+    throw new Error("Error deactivating vet");
+  }
+}
+
+async function activateVet(id) {
+  try {
+    await Vet.update({ active: 1 }, { where: { id } });
+  } catch (error) {
+    throw new Error("Error activating vet");
+  }
+}
 module.exports = vetService;
