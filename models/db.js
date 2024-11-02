@@ -34,6 +34,7 @@ const HairColorModel = require('./db/hair_color.model');
 const HairLengthModel = require('./db/hair_length.model');
 const PetSizeModel = require('./db/pet_size.model');
 const VeterinaryAssociationModel = require('./db/veteriary_association.model');
+const QualificationModel = require('./db/qualification.model');
 const VaccinationModel = require('./db/vaccination.model');
 const DrugTypeModel = require('./db/drug_type.model');
 const env = process.env.NODE_ENV || 'development'; //se configura la variable ENV desde el CLI de deploy (CREO!)
@@ -79,6 +80,7 @@ const HairColor = HairColorModel(sequelize, Sequelize);
 const HairLength = HairLengthModel(sequelize, Sequelize);
 const PetSize = PetSizeModel(sequelize, Sequelize);
 const VeterinaryAssociation = VeterinaryAssociationModel(sequelize, Sequelize);
+const Qualification = QualificationModel(sequelize, Sequelize);
 const Vaccination = VaccinationModel(sequelize, Sequelize);
 const DrugType = DrugTypeModel(sequelize, Sequelize);
 const VetHours = VetHoursModel(sequelize, Sequelize);
@@ -123,6 +125,7 @@ DiagnosisItemTreatment.belongsTo(Drug);
 TreatmentOption.belongsTo(TreatmentType);
 VeterinaryAssociation.belongsTo(Vet);
 VeterinaryAssociation.belongsTo(Veterinary);
+Qualification.belongsTo(ClinicalRecord);
 Vaccination.belongsTo(Drug);
 Vaccination.belongsTo(Pet);
 Vaccination.belongsTo(Vet);
@@ -189,6 +192,7 @@ module.exports = {
     HairLength,
     PetSize,
     TreatmentOption,
+    Qualification,
     VeterinaryAssociation,
     Vaccination,
     DrugType,

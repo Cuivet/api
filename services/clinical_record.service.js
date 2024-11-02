@@ -3,18 +3,25 @@ const veterinaryService = require('./veterinary.service');
 const tutorService = require('./tutor.service');
 const petService = require('./pet.service');
 const vetService = require('./vet.service');
+const qualificationService = require('./qualification.service');
+const Sequelize = require('sequelize');
 
 var clinicalRecordService = {
     create: create,
     save: save,
     findOne: findOne,
     findAllByVeterinary: findAllByVeterinary,
+    findAllByPet: findAllByPet, 
+    findAllCRByPetIds:findAllCRByPetIds,
     findAllByTutor: findAllByTutor
 }
 
 async function create(clinicalRecord) {
-    id = (await ClinicalRecord.create({petId: clinicalRecord.petId, vetId: clinicalRecord.vetId, veterinaryId: clinicalRecord.veterinaryId, reasonConsultation: clinicalRecord.reasonConsultation})).id;
-    return findOne(id);
+    newClinicalRecord = (await ClinicalRecord.create({petId: clinicalRecord.petId, vetId: clinicalRecord.vetId, veterinaryId: clinicalRecord.veterinaryId}));
+    if(newClinicalRecord){
+        newQualification = await qualificationService.create({clinicalRecordId: newClinicalRecord.id}); //Inserta el registro  
+    }
+    return findOne(newClinicalRecord.id);
 }
 
 async function save(clinicalRecordDTO){
@@ -123,6 +130,7 @@ async function findOne(id){
         }
     }
     clinicalRecordDTO.prognosis = await Prognosis.findOne({where: { visitId: clinicalRecordDTO.visits.map( visit => visit.id) }});
+    console.log('RESULTADO CR '+clinicalRecordDTO.veterinaryData);
     return clinicalRecordDTO;
 }
 
@@ -135,6 +143,35 @@ async function findAllByVeterinary(veterinaryId){
     return clinicalRecords;
 }
 
+async function findAllByPet(petId){//tengo una lista de pets, entonces genero una lista de clinical_record que coincidan con esa mascota
+    clinicalRecords = []
+    clinicalRecordIds = (await ClinicalRecord.findAll({where: {petId: petId}})).map(clinicalRecord => clinicalRecord.id);
+    for (clinicalRecordId of clinicalRecordIds) {
+        clinicalRecords.push(await findOne(clinicalRecordId));
+    }
+    return clinicalRecords;
+}
+
+async function findAllCRByPetIds(petIds) {
+    // Encuentra todos los clinicalRecords que coincidan con los petIds
+    const clinicalRecords = await ClinicalRecord.findAll({
+        where: {
+            petId: {
+                [Sequelize.Op.in]: petIds
+            }
+        }
+    });
+
+    // Extrae los IDs de los registros clínicos
+    const clinicalRecordIds = clinicalRecords.map(clinicalRecord => clinicalRecord.id);
+
+    // Usa Promise.all para obtener todos los registros clínicos completos en paralelo
+    const detailedClinicalRecords = await Promise.all(
+        clinicalRecordIds.map(clinicalRecordId => findOne(clinicalRecordId))
+    );
+
+    return detailedClinicalRecords;
+}
 async function findAllByTutor(tutorId){
     clinicalRecords = []
     petIds = (await Pet.findAll({where: {tutorId: tutorId}})).map(pet => pet.id);
