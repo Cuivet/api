@@ -121,10 +121,11 @@ async function findAllByVeterinaryId(veterinaryId) {
   //const petIds = (await petAssociationService.findAllDataByVeterinaryId(veterinaryId)).map((pet) => pet.id);
   const response = await petAssociationService.findAllDataByVeterinaryId(veterinaryId);
   const petIds = Array.isArray(response) 
-  ? response.map((item) => item.pet ? item.pet.id : null).filter(id => id !== null) 
-  : [];
+    ? response.map((item) => item.pet ? item.pet.id : null).filter(id => id !== null) 
+    : [];
 
-  clinicalRecordResponse = [];
+  const clinicalRecordResponse = [];
+
   for (let petId of petIds) {
     const recordsForPet = await clinicalRecordService.findAllByPet(petId);
 
@@ -140,7 +141,7 @@ async function findAllByVeterinaryId(veterinaryId) {
 
   //const clinicalRecords = await clinicalRecordService.findAllCRByPetIds(petIds);
   const qualificationbyVeterinary = await findAllByClinicalRecordIds(
-    clinicalRecords.map((cr) => cr.id)
+    clinicalRecordResponse.map((cr) => cr.id)
   );
 
   const resultadoQualifications = [];
