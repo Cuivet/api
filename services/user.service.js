@@ -202,8 +202,9 @@ async function loginUser(user) {
   const bdUser = await User.findOne({ where: { email: user.email } });
   if (!bdUser) {
     return { error: "Usuario no existente" };
+  } else if (!bdUser.active) {
+    return { error: "Usuario desactivado. Comuníquese con el administrador" };
   }
-
   const isSamePassword = bcrypt.compareSync(user.password, bdUser.password);
   if (!isSamePassword) {
     return { error: "Contraseña incorrecta" };
