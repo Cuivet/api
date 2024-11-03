@@ -1,6 +1,7 @@
-const { Vet, VetHours, VeterinaryAssociation } = require("../models/db");
+const { Vet, VetHours, VeterinaryAssociation, PetAssociation } = require("../models/db");
 const veterinaryService = require("./veterinary.service");
 const personService = require("./person.service");
+const vetOwnerService = require("./vet_owner.service");
 const moment = require("moment/moment");
 const { Op } = require("sequelize");
 const { findAllByVetId } = require("./vet_hours.service");
@@ -123,7 +124,7 @@ async function findByFilter(filter) {
 
 async function findAll() {
   const vets = await Vet.findAll();
-  const vetsWithHours = await Promise.all(
+  const vetsWithDetails = await Promise.all(
     vets.map(async (vet) => {
       const hours = await findAllByVetId(vet.id);
       const cleanedHours = hours.map((hour) => ({
@@ -131,89 +132,27 @@ async function findAll() {
         openTime: hour.openTime,
         closeTime: hour.closeTime,
       }));
-      return { ...vet, hours: cleanedHours };
+
+      const vetOwner = await vetOwnerService.findOne(vet.vetOwnerId);
+      const ownerDetails = await personService.findByUserId(vetOwner[0].userId);
+
+      return { ...vet, hours: cleanedHours, owner: ownerDetails };
     })
   );
-  return vetsWithHours;
+  return vetsWithDetails;
 }
 
 async function remove(id) {
   await Vet.destroy({
     where: { id: id },
   });
+  await VeterinaryAssociation.destroy({
+    where: { vetId: id },
+  });
+  await PetAssociation.destroy({
+    where: { vetId: id },
+  });
   return { message: "Vet con id " + id + " borrado" };
-}
-
-//findAllVetsDataByVetOwnerId //dejaría de usarlo y usaría solo lo que haga en veterinariesassociatios. Esta la usaba para que el owner vea a quienes tiene como regente en cada una de sus vets
-async function findAllByVetOwnerId2(vetOwnerId) {
-  const veterinaryAssociationService = require("./veterinary_association.service");
-  vetData = [];
-  var vets = await Vet.findAll({ where: { vetOwnerId: vetOwnerId } });
-  const veterinariesIds = vets
-    .map((vet) => vet.veterinaryId)
-    .filter((veterinaryId) => veterinaryId !== null);
-  const vetsIds = vets.map((vet) => vet.id);
-  const veterinaries = await veterinaryService.findByFilter({
-    where: { id: veterinariesIds },
-  });
-  const userIds = veterinaries.map((veterinary) => veterinary.userId);
-  const persons = await personService.findByFilter({
-    where: { userId: userIds },
-  });
-  const asociaciones = await veterinaryAssociationService.findByFilter({
-    where: { vetId: vetsIds },
-  });
-  if (vets.length) {
-    for (const vet of vets) {
-      var veterinary = null;
-      var person = null;
-      let coveterinaryData = [];
-
-      if (vet.veterinaryId) {
-        veterinary = veterinaries.filter(
-          (veterinary) => veterinary.id === vet.veterinaryId
-        )[0];
-        person = persons.filter(
-          (person) => person.userId === veterinary.userId
-        )[0];
-      }
-
-      const asociations = asociaciones.filter((a) => a.vetId === vet.id);
-      const coVeterinariesIds = asociations
-        .map((vet) => vet.veterinaryId)
-        .filter((veterinaryId) => veterinaryId !== null);
-      const coVeterinaries = await veterinaryService.findByFilter({
-        where: { id: coVeterinariesIds },
-      });
-      const coUserIds = coVeterinaries.map((veterinary) => veterinary.userId);
-      const coPersons = await personService.findByFilter({
-        where: { userId: coUserIds },
-      });
-
-      if (asociations.length > 0) {
-        for (const asociation of asociations) {
-          const coveterinary = coVeterinaries.filter(
-            (v) => v.id === asociation.veterinaryId
-          )[0];
-          const coperson = coPersons.filter(
-            (person) => person.userId === coveterinary.userId
-          )[0];
-          coveterinaryData.push({
-            coveterinary: coveterinary,
-            coperson: coperson,
-          });
-        }
-      }
-      vetData.push({
-        vet,
-        veterinaryData: veterinary
-          ? { veterinary: veterinary, person: person }
-          : null,
-        coveterinaryData: coveterinaryData ? coveterinaryData : null,
-      });
-    }
-  }
-  return vetData;
 }
 
 async function findAllByVetOwnerId(vetOwnerId) {
@@ -222,7 +161,9 @@ async function findAllByVetOwnerId(vetOwnerId) {
   const personService = require("./person.service");
   const vetData = [];
 
-  const vets = await Vet.findAll({ where: { vetOwnerId: vetOwnerId } });
+  const vets = await Vet.findAll({
+    where: { vetOwnerId: vetOwnerId },
+  });
   const veterinariesIds = vets
     .map((vet) => vet.veterinaryId)
     .filter((veterinaryId) => veterinaryId !== null);
@@ -368,17 +309,15 @@ async function findAllVetDataByIds(ids) {
   return vetDataList;
 }
 
-//elimina al regente de la clinica
-async function removeAssociation(vetId) {
-  await Vet.destroy({
-    where: { id: id },
-  });
-  return { message: "Vet con id " + id + " borrado" };
-}
-
 async function deactivateVet(id) {
   try {
-    await Vet.update({ active: 0 }, { where: { id } });
+    await Vet.update({ active: 0, veterinaryId: null }, { where: { id } });
+    await VeterinaryAssociation.destroy({
+      where: { vetId: id },
+    });
+    await PetAssociation.destroy({
+      where: { vetId: id },
+    });
   } catch (error) {
     throw new Error("Error deactivating vet");
   }
