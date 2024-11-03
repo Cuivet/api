@@ -71,4 +71,24 @@ router.get('/allVetDataByIds/:id', async (req,res) => {
   res.json(vets);
 });
 
+router.put("/deactivate/:id", async (req, res) => {
+  console.log("Request to " + req.method + " on: " + req.baseUrl + req.url);
+  try {
+    await vetService.deactivateVet(req.params.id);
+    res.status(200).send({ message: "Vet deactivated successfully" });
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
+router.put("/activate/:id", async (req, res) => {
+  console.log("Request to " + req.method + " on: " + req.baseUrl + req.url);
+  try {
+    await vetService.activateVet(req.params.id);
+    res.status(200).send({ message: "Vet deactivated successfully" });
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
 module.exports = router;
