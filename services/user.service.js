@@ -92,7 +92,7 @@ async function checkUserAndGenerateCode(newProfile) {
     };
   }
 
-  if (newProfile.user.email[0].includes("@gmail.com")) {
+  if (newProfile.user.email.includes("@gmail.com")) {
     // para no exceder la cuota diaria, solo manda a @gmail
     const mailOptions = {
       from: "cuivetmailservice@gmail.com",
