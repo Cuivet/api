@@ -75,7 +75,7 @@ async function findAllByTutorId(tutorId) {
 
   const petIds = (await petService.findByTutorId(tutorId)).map((pet) => pet.id);
 
-  clinicalRecordResponse = [];
+  const clinicalRecordResponse = [];
   for (let petId of petIds) {
     const recordsForPet = await clinicalRecordService.findAllByPet(petId);
 
