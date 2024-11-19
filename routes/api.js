@@ -17,6 +17,7 @@ const apiPetAssociationRouter = require('./api/pet_association.route');
 const apiClinicalRecordRouter = require('./api/clinical_record.route');
 const apiAnamnesisQuestionRouter = require('./api/anamnesis_question.route');
 const apiComplementaryStudyTypeRouter = require('./api/complementary_study_type.route');
+const apiComplementaryStudyRouter = require('./api/complementary_study.route');
 const apiDiagnosisTypeRouter = require('./api/diagnosis_type.route');
 const apiDrugRouter = require('./api/drug.route');
 const apiTreatmentTypeRouter = require('./api/treatment_type.route');
@@ -30,6 +31,7 @@ const apiVaccinationRouter = require('./api/vaccination.route');
 const apiDrugTypeRouter = require('./api/drug_type.route');
 
 router.use('/user', apiUserRouter);
+router.use('/complementary-study', apiComplementaryStudyRouter);
 router.use('/person', middleware.checkToken, apiPersonRouter);
 router.use('/veterinary', middleware.checkToken, apiVeterinaryRouter);
 router.use('/tutor', middleware.checkToken, apiTutorRouter);
