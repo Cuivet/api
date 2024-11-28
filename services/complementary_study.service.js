@@ -1,9 +1,15 @@
 const { ComplementaryStudy } = require('../models/db');
 
 var complementaryStudyService = {
+  save: save,
   findOne: findOne,
   updateOne: updateOne, // Nueva función
 };
+
+async function save(data) {
+  const cs = await ComplementaryStudy.create(data); // Crea el nuevo registro
+  return cs; // Devuelve el registro creado
+}
 
 // Buscar un Complementary Study por ID
 async function findOne(id) {

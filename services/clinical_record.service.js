@@ -73,7 +73,11 @@ async function save(clinicalRecordDTO){
         if(clinicalRecordDTO.presumptiveDiagnosis.complementaryStudies && !clinicalRecordDTO.presumptiveDiagnosis.complementaryStudies.id){
             for (study of clinicalRecordDTO.presumptiveDiagnosis.complementaryStudies) {
                 study.presumptiveDiagnosisId = clinicalRecordDTO.presumptiveDiagnosis.id;
-                study.id = (await ComplementaryStudy.create(study)).id;
+                await ComplementaryStudy.update(study, {
+                    where: {
+                        id: study.id
+                    }
+                });
             }
         }
         
