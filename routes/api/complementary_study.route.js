@@ -1,6 +1,21 @@
 const router = require('express').Router();
 const complementaryStudyService = require('../../services/complementary_study.service');
 
+// Crear un nuevo Complementary Study
+router.post('/', async (req, res) => {
+  console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+  try {
+    const newCs = await complementaryStudyService.save(req.body);
+    res.status(201).json({
+      message: "Complementary Study creado correctamente",
+      data: newCs
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al crear el Complementary Study" });
+  }
+});
+
 // Obtener un Complementary Study por ID
 router.get('/:id', async (req, res) => {
   console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
