@@ -5,7 +5,8 @@ var raceService = {
     findOne: findOne,
     findAll: findAll,
     remove: remove,
-    findBySpecieId: findBySpecieId
+    findBySpecieId: findBySpecieId,
+    findByRaceId : findByRaceId
 }
 
 async function save(reqRace){
@@ -44,6 +45,13 @@ async function findBySpecieId(specieId){
         where: { specieId: specieId }
     });
     return races;
+}
+
+async function findByRaceId(raceId){
+    var species = await Race.findAll({
+        where: { raceId: raceId }
+    });
+    return species;
 }
 
 module.exports = raceService;
