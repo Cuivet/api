@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const raceService = require('../../services/race.service');
+const specieService = require('../../services/specie.service');
 
 router.get('/all', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
@@ -11,6 +12,12 @@ router.get('/allBySpecieId/:specieId', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const race = await raceService.findBySpecieId(req.params.specieId);
     res.json(race);
+});
+
+router.get('/allByRaceId/:raceId', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const specie = await specieService.findByRaceId(req.params.specieId);
+    res.json(specie);
 });
 
 router.get('/:id', async (req,res) => {

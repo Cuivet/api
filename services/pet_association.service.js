@@ -121,6 +121,7 @@ async function findAllPetAssociationData(veterinaryId, tutorId, vetId) {
 			),
 			pet: pet,
 			associationId: petAssociation.id,
+			associationDate: petAssociation.createdAt,
 			vetData: vetData,
 		});
 	});
