@@ -9,6 +9,8 @@ module.exports = {
       {id: 4, name: 'Amarillo', createdAt: new Date(), updatedAt: new Date()},
       {id: 5, name: 'Gris', createdAt: new Date(), updatedAt: new Date()},
       {id: 6, name: 'Dorado', createdAt: new Date(), updatedAt: new Date()},
+      {id: 7, name: 'Sin color', createdAt: new Date(), updatedAt: new Date()},
+
     ]
     return queryInterface.bulkInsert('hair_color', hairColors, {});
   },
