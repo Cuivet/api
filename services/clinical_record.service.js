@@ -8,7 +8,8 @@ const Sequelize = require('sequelize');
 
 var clinicalRecordService = {
     create: create,
-    save: save,
+    remove: remove,
+    save: save,    
     findOne: findOne,
     findAllByVeterinary: findAllByVeterinary,
     findAllByPet: findAllByPet, 
@@ -23,6 +24,12 @@ async function create(clinicalRecord) {
     }
     return findOne(newClinicalRecord.id);
 }
+
+async function remove(id) {
+    await ClinicalRecord.destroy({ where: { id: id } });
+    return { message: "ClinicalRecord con id " + id + " borrada" };
+    // modificar para borrar en cascada todas las demas tablas, parecido al save
+  }
 
 async function save(clinicalRecordDTO){
     if(!clinicalRecordDTO.id){

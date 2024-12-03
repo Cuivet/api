@@ -51,4 +51,10 @@ router.get('/allCRByPetIds/:ids', async (req,res) => {
     res.json(clinicalRecords);
 });
 
+router.delete('/:id', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const response = await clinicalRecordService.remove(req.params.id);
+    res.json(response);
+});
+
 module.exports = router;

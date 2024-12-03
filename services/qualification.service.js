@@ -118,28 +118,8 @@ return resultadoQualifications;
 async function findAllByVeterinaryId(veterinaryId) {
   const clinicalRecordService = require("./clinical_record.service");
 
-  //const petIds = (await petAssociationService.findAllDataByVeterinaryId(veterinaryId)).map((pet) => pet.id);
-  const response = await petAssociationService.findAllDataByVeterinaryId(veterinaryId);
-  const petIds = Array.isArray(response) 
-    ? response.map((item) => item.pet ? item.pet.id : null).filter(id => id !== null) 
-    : [];
-
-  const clinicalRecordResponse = [];
-
-  for (let petId of petIds) {
-    const recordsForPet = await clinicalRecordService.findAllByPet(petId);
-
-    if (clinicalRecordResponse.length > 0) { // Corregido aquí
-      clinicalRecordResponse.push(...recordsForPet); // Añadir los elementos del array uno por uno
-    } 
-  // Si es un solo objeto, lo añadimos directamente.
-    else if (recordsForPet) {
-     clinicalRecordResponse.push(...recordsForPet); // Añadir el objeto al array
-    }
-  }
-
-
-  //const clinicalRecords = await clinicalRecordService.findAllCRByPetIds(petIds);
+  const clinicalRecordResponse = await clinicalRecordService.findAllByVeterinary(veterinaryId);
+ 
   const qualificationbyVeterinary = await findAllByClinicalRecordIds(
     clinicalRecordResponse.map((cr) => cr.id)
   );
