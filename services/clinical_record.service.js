@@ -14,7 +14,8 @@ var clinicalRecordService = {
     findAllByVeterinary: findAllByVeterinary,
     findAllByPet: findAllByPet, 
     findAllCRByPetIds:findAllCRByPetIds,
-    findAllByTutor: findAllByTutor
+    findAllByTutor: findAllByTutor,
+    findAllByVetId:findAllByVetId
 }
 
 async function create(clinicalRecord) {
@@ -148,6 +149,15 @@ async function findOne(id){
 async function findAllByVeterinary(veterinaryId){
     clinicalRecords = []
     clinicalRecordIds = (await ClinicalRecord.findAll({where: {veterinaryId: veterinaryId}})).map(clinicalRecord => clinicalRecord.id);
+    for (clinicalRecordId of clinicalRecordIds) {
+        clinicalRecords.push(await findOne(clinicalRecordId));
+    }
+    return clinicalRecords;
+}
+
+async function findAllByVetId(vetId){
+    clinicalRecords = []
+    clinicalRecordIds = (await ClinicalRecord.findAll({where: {vetId: vetId}})).map(clinicalRecord => clinicalRecord.id);
     for (clinicalRecordId of clinicalRecordIds) {
         clinicalRecords.push(await findOne(clinicalRecordId));
     }

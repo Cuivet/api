@@ -68,9 +68,9 @@ async function checkUserAndGenerateCode(newProfile) {
   }
 
   // Borrar este if cuando quiera que se escanee el documento de todos los perfiles
-  if (newProfile.tutor != undefined) {
-    await qrService.checkIfIsValidDNI(newProfile.photo, newProfile.person.dni);
-  }
+  // if (newProfile.tutor != undefined) {
+  await qrService.checkIfIsValidDNI(newProfile.photo, newProfile.person.dni);
+  // }
 
   const rndCode = Math.floor(Math.random() * 10000);
   const index = temporalAccounts.findIndex(
