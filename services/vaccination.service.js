@@ -54,17 +54,6 @@ async function remove(id) {
   return { message: "Vaccination con id " + id + " borrado" };
 }
 
-async function findAllByPetId2(id) {
-  vaccinations = [];
-  vaccinationIds = (await Vaccination.findAll({ where: { petId: id } })).map(
-    (vac) => vac.id
-  );
-  for (vaccinationId of vaccinationIds) {
-    vaccinations.push(await findOne(vaccinationId));
-  }
-  return vaccinations;
-}
-
 async function findAllByVeterinaryId(id) {
   vaccinations = [];
   vaccinationIds = (
@@ -107,9 +96,7 @@ async function findAllByPetId(petId) {
       raw: true,
       nest: true,
     });
-    // console.log(JSON.stringify(vaccinations, null, 2)); // Para ver la estructura completa
 
-    // Mapeamos para estructurar los datos como desees
     return vaccinations.map((vaccination) => ({
       id: vaccination.id,
       placementDate: vaccination.placementDate,
