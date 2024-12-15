@@ -9,7 +9,7 @@ router.get('/all', async (req,res) => {
 
 router.get('/allByPetId/:petId', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
-    const vacs = await vaccinationService.findAllByPetId(req.params.petId);
+    const vacs = await vaccinationService.findAllByPetId1(req.params.petId);
     res.json(vacs);
 });
 
@@ -46,6 +46,12 @@ router.delete('/:id', async (req,res) => {
     console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
     const response = await vaccinationService.remove(req.params.id);
     res.json(response);
+});
+
+router.get('/allByVetByPet/:petId', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const vacs = await vaccinationService.findAllByPetId(req.params.petId);
+    res.json(vacs);
 });
 
 module.exports = router;

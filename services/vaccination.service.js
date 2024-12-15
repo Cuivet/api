@@ -1,5 +1,12 @@
-const { Vaccination, Drug, DrugType } = require("../models/db");
+const {
+  Vaccination,
+  Drug,
+  DrugType,
+  Vet,
+  Veterinary,
+} = require("../models/db");
 const { findByFilter } = require("./pet.service");
+const personService = require("./person.service");
 
 var vaccinationService = {
   create: create,
@@ -9,6 +16,7 @@ var vaccinationService = {
   remove: remove,
   findAllByPetId: findAllByPetId,
   findAllByVeterinaryId: findAllByVeterinaryId,
+  findAllByPetId1: findAllByPetId1,
 };
 
 async function create(reqVac) {
@@ -80,6 +88,11 @@ async function findAllByPetId(petId) {
             },
           ],
         },
+        {
+          model: Vet,
+          attributes: ["name"],
+        },
+        { model: Veterinary },
       ],
       attributes: [
         "id",
@@ -97,24 +110,46 @@ async function findAllByPetId(petId) {
       nest: true,
     });
 
-    return vaccinations.map((vaccination) => ({
-      id: vaccination.id,
-      placementDate: vaccination.placementDate,
-      nextDate: vaccination.nextDate,
-      weight: vaccination.weight,
-      observation: vaccination.observation,
-      signed: vaccination.signed,
-      drugName: vaccination.drug?.name || "Desconocido",
-      drugTypeName: vaccination.drug?.drug_type.name || "Desconocido",
-      vetId: vaccination.vetId,
-      petId: vaccination.petId,
-      createdAt: vaccination.createdAt,
-      updatedAt: vaccination.updatedAt,
-    }));
+    const result = await Promise.all(
+      vaccinations.map(async (vaccination) => {
+        const userId = vaccination.veterinary?.userId;
+        const veterinary = userId
+          ? await personService.findByUserId(userId)
+          : null;
+        return {
+          id: vaccination.id,
+          placementDate: vaccination.placementDate,
+          nextDate: vaccination.nextDate,
+          weight: vaccination.weight,
+          observation: vaccination.observation,
+          signed: vaccination.signed,
+          drugName: vaccination.drug?.name || "Desconocido",
+          drugTypeName: vaccination.drug?.drug_type?.name || "Desconocido",
+          vetId: vaccination.vetId,
+          vetName: vaccination.vet.name,
+          petId: vaccination.petId,
+          createdAt: vaccination.createdAt,
+          updatedAt: vaccination.updatedAt,
+          veterinaryData: veterinary ? veterinary : "Desconocido",
+        };
+      })
+    );
+    return result;
   } catch (error) {
     console.error("Error fetching vaccinations:", error);
     throw error;
   }
+}
+
+async function findAllByPetId1(id) {
+  vaccinations = [];
+  vaccinationIds = (await Vaccination.findAll({ where: { petId: id } })).map(
+    (vac) => vac.id
+  );
+  for (vaccinationId of vaccinationIds) {
+    vaccinations.push(await findOne(vaccinationId));
+  }
+  return vaccinations;
 }
 
 module.exports = vaccinationService;
