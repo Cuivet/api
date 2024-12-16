@@ -37,4 +37,10 @@ router.delete('/:id', async (req,res) => {
     res.json(response);
 });
 
+router.get('/allDataByTutorId/:tutorId', async (req,res) => {
+    console.log('Request to ' + req.method + ' on: ' + req.baseUrl + req.url);
+    const pets = await petService.findDataByTutorId(req.params.tutorId);
+    res.json(pets);
+});
+
 module.exports = router;
